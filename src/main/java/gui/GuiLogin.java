@@ -1,5 +1,7 @@
 package gui;
 
+import entity.Account;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -44,7 +46,6 @@ public class GuiLogin extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 btnLoginActionPerformed(e);
             }
-
         });
     }
 
@@ -54,8 +55,25 @@ public class GuiLogin extends JFrame {
 
         if (userName.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please input username or password");
-        }else{
-
+        } else {
+            Account user = Account.getAccountFromUserName(userName);
+            if (userName.equals(user.getUserName()) && password.equals(user.getPassword())) {
+                if (user.getRoleId() == 1) {
+                    dispose();
+                    var adm = new GuiAdmin(userName);
+                    JOptionPane.showMessageDialog(null, "Login Success");
+                } else if (user.getRoleId() == 2) {
+                    dispose();
+                    var emp = new GuiEmployee(userName);
+                    JOptionPane.showMessageDialog(null, "Login Success");
+                } else if (user.getRoleId() == 3) {
+                    dispose();
+                    var manager = new GuiManager(userName);
+                    JOptionPane.showMessageDialog(null, "Login Success");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Wrong username or password");
+                }
+            }
         }
     }
 

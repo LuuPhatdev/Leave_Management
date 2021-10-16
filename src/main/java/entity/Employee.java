@@ -10,9 +10,12 @@ public class Employee {
     private int phone;
     private String email;
     private double annualLeave;
+    private int accountId;
+    private int departmentId;
+    private int managerId;
 
     public Employee(int employeeId, String fullName, int gender, LocalDate dateOfBirth, int phone, String email,
-                    double annualLeave) {
+                    double annualLeave, int accountId, int departmentId, int managerId) {
         this.employeeId = employeeId;
         this.fullName = fullName;
         this.gender = gender;
@@ -20,6 +23,9 @@ public class Employee {
         this.phone = phone;
         this.email = email;
         this.annualLeave = annualLeave;
+        this.accountId = accountId;
+        this.departmentId = departmentId;
+        this.managerId = managerId;
     }
 
     public Employee() {
@@ -81,6 +87,30 @@ public class Employee {
         this.annualLeave = annualLeave;
     }
 
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public int getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(int departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public int getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(int managerId) {
+        this.managerId = managerId;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -91,7 +121,9 @@ public class Employee {
                 ", phone=" + phone +
                 ", email='" + email + '\'' +
                 ", annualLeave=" + annualLeave +
+                ", accountId=" + accountId +
+                ", departmentId=" + departmentId +
+                ", managerId=" + managerId +
                 '}';
     }
-
 }

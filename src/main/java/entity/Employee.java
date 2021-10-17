@@ -1,29 +1,31 @@
 package entity;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Employee {
     private int employeeId;
     private String fullName;
     private int gender;
     private LocalDate dateOfBirth;
-    private int phone;
+    private LocalDate dateStart;
+    private String phone;
     private String email;
     private double annualLeave;
-    private int accountId;
     private int departmentId;
     private int managerId;
 
-    public Employee(int employeeId, String fullName, int gender, LocalDate dateOfBirth, int phone, String email,
-                    double annualLeave, int accountId, int departmentId, int managerId) {
+    public Employee(int employeeId, String fullName, int gender, LocalDate dateOfBirth, LocalDate dateStart, String phone, String email,
+                    double annualLeave, int departmentId, int managerId) {
         this.employeeId = employeeId;
         this.fullName = fullName;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
+        this.dateStart = dateStart;
         this.phone = phone;
         this.email = email;
         this.annualLeave = annualLeave;
-        this.accountId = accountId;
         this.departmentId = departmentId;
         this.managerId = managerId;
     }
@@ -63,11 +65,11 @@ public class Employee {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -87,14 +89,6 @@ public class Employee {
         this.annualLeave = annualLeave;
     }
 
-    public int getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
-    }
-
     public int getDepartmentId() {
         return departmentId;
     }
@@ -111,18 +105,23 @@ public class Employee {
         this.managerId = managerId;
     }
 
+    public LocalDate getDateStart() {return dateStart;}
+
+    public void setDateStart(LocalDate dateStart) {this.dateStart = dateStart;}
+
+
     @Override
     public String toString() {
         return "Employee{" +
                 "employeeId=" + employeeId +
                 ", fullName='" + fullName + '\'' +
                 ", gender=" + gender +
-                ", dateOfBirth=" + dateOfBirth +
+                ", dateOfBirth=" + dateOfBirth.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) +
                 ", phone=" + phone +
                 ", email='" + email + '\'' +
                 ", annualLeave=" + annualLeave +
-                ", accountId=" + accountId +
                 ", departmentId=" + departmentId +
+                ", datestart=" + dateStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) +
                 ", managerId=" + managerId +
                 '}';
     }

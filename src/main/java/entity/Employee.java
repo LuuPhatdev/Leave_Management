@@ -8,7 +8,7 @@ public class Employee {
     private int gender;
     private LocalDate dateOfBirth;
     private LocalDate dateStart;
-    private int phone;
+    private String phone;
     private String email;
     private double annualLeave;
     private int accountId;
@@ -16,7 +16,7 @@ public class Employee {
     private int managerId;
 
     public Employee(int employeeId, String fullName, int gender, LocalDate dateOfBirth, LocalDate dateStart,
-                    int phone, String email,
+                    String phone, String email,
                     double annualLeave, int accountId, int departmentId, int managerId) {
         this.employeeId = employeeId;
         this.fullName = fullName;
@@ -70,13 +70,9 @@ public class Employee {
 
     public void setDateStart(LocalDate dateStart) { this.dateStart = dateStart; }
 
-    public int getPhone() {
-        return phone;
-    }
+    public String getPhone() { return phone; }
 
-    public void setPhone(int phone) {
-        this.phone = phone;
-    }
+    public void setPhone(String phone) { this.phone = phone; }
 
     public String getEmail() {
         return email;

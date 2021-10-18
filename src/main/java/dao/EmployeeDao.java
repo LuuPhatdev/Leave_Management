@@ -26,7 +26,7 @@ public class EmployeeDao {
                 employee.setFullName(rs.getString("fullname"));
                 employee.setGender(rs.getInt("gender"));
                 employee.setDateOfBirth(rs.getDate("date_of_birth").toLocalDate());
-                employee.setPhone(rs.getInt("phone"));
+                employee.setPhone(rs.getString("phone"));
                 employee.setEmail(rs.getString("email"));
                 employee.setDateStart(rs.getDate("date_start").toLocalDate());
                 employee.setAnnualLeave(rs.getDouble("annual_leave"));

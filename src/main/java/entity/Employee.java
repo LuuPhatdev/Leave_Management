@@ -7,6 +7,7 @@ public class Employee {
     private String fullName;
     private int gender;
     private LocalDate dateOfBirth;
+    private LocalDate dateStart;
     private int phone;
     private String email;
     private double annualLeave;
@@ -14,12 +15,14 @@ public class Employee {
     private int departmentId;
     private int managerId;
 
-    public Employee(int employeeId, String fullName, int gender, LocalDate dateOfBirth, int phone, String email,
+    public Employee(int employeeId, String fullName, int gender, LocalDate dateOfBirth, LocalDate dateStart,
+                    int phone, String email,
                     double annualLeave, int accountId, int departmentId, int managerId) {
         this.employeeId = employeeId;
         this.fullName = fullName;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
+        this.dateStart = dateStart;
         this.phone = phone;
         this.email = email;
         this.annualLeave = annualLeave;
@@ -63,6 +66,10 @@ public class Employee {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public LocalDate getDateStart() { return dateStart; }
+
+    public void setDateStart(LocalDate dateStart) { this.dateStart = dateStart; }
+
     public int getPhone() {
         return phone;
     }
@@ -99,9 +106,7 @@ public class Employee {
         return departmentId;
     }
 
-    public void setDepartmentId(int departmentId) {
-        this.departmentId = departmentId;
-    }
+    public void setDepartmentId(int departmentId) { this.departmentId = departmentId; }
 
     public int getManagerId() {
         return managerId;
@@ -118,6 +123,7 @@ public class Employee {
                 ", fullName='" + fullName + '\'' +
                 ", gender=" + gender +
                 ", dateOfBirth=" + dateOfBirth +
+                ", dateStart=" + dateStart +
                 ", phone=" + phone +
                 ", email='" + email + '\'' +
                 ", annualLeave=" + annualLeave +

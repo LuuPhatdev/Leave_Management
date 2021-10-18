@@ -1,5 +1,8 @@
 package entity;
 
+import dao.AccountDao;
+import dao.LoginDao;
+
 public class Role {
     private int roleId;
     private String roleTitle;
@@ -36,6 +39,11 @@ public class Role {
 
     public void setRoleDescription(String roleDescription) {
         this.roleDescription = roleDescription;
+    }
+
+    public static Role getListRole(int roleId) {
+        AccountDao listRole = new AccountDao();
+        return  listRole.getRole(roleId);
     }
 
     @Override

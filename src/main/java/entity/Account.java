@@ -1,7 +1,7 @@
 package entity;
 
 
-import dao.AccountDao;
+import dao.LoginDao;
 
 public class Account {
     private int accountId;
@@ -62,8 +62,8 @@ public class Account {
     }
 
     public static Account getAccountFromUserName(String username) {
-        AccountDao accountDao = new AccountDao();
-        return accountDao.getAccountInfo(username);
+        LoginDao loginDao = new LoginDao();
+        return loginDao.getAccountByUserName(username);
     }
 
     @Override

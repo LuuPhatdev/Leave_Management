@@ -2,36 +2,48 @@ package dao;
 
 import common.ConnectDBProperty;
 import entity.Account;
+import entity.Role;
 
 import javax.swing.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDao {
-    static void fetchUserInfo(List<Account> users, ResultSet rs) throws SQLException {
-        while (rs.next()) {
-            var account = new Account();
-            account.setEmloyeeId(rs.getInt("employee_id"));
-            account.setRoleId(rs.getInt("role_id"));
-            account.setUserName(rs.getString("username"));
-            account.setPassword(rs.getString("pass"));
-            users.add(account);
-        }
-    }
-
-    public Account getAccountInfo(String userName) {
-        List<Account> users = new ArrayList<>();
+    /**
+     * Get List Account
+     * @return
+     */
+    public List<Account> getListAccounts() {
+        List<Account> listAccounts = new ArrayList<>();
 
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();
-             var cs = connect.prepareStatement("select * from account where userName = ?");) {
-            cs.setString(1, userName);
-            var rs = cs.executeQuery();
-            fetchUserInfo(users, rs);
+             var cs = connect.prepareCall("{call seAllAccount}");
+             var rs = cs.executeQuery();) {
+            LoginDao.fetchAccounts(listAccounts, rs);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
-        return users.get(0);
+        return listAccounts;
+    }
+
+    public Role getRole(int roleId){
+        List<Role> listRole = new ArrayList<>();
+
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from role where role_id=?");
+             ) {
+            cs.setInt(1, roleId);
+            var rs = cs.executeQuery();
+          while (rs.next()){
+              var role = new Role();
+              role.setRoleId(rs.getInt("role_id"));
+              role.setRoleTitle(rs.getString("role_title"));
+              role.setRoleDescription(rs.getString("role_description"));
+              listRole.add(role);
+          }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return listRole.get(0);
     }
 }

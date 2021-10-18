@@ -30,7 +30,7 @@ public class GuiEmployee extends JFrame {
     public GuiEmployee(int empID) {
         this.employeeID = empID;
         var employeeDao = new EmployeeDao();
-        var employee = employeeDao.getEmployeeInfo(employeeID);
+        var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
         var departmentDao = new DepartmentDao();
         var department = departmentDao.getDepartmentInfo(employee.getDepartmentId());
 
@@ -42,14 +42,15 @@ public class GuiEmployee extends JFrame {
 
         lbPhoneNumber.setText(String.valueOf(employee.getPhone()));
         lbEmail.setText(employee.getEmail());
-        lbFillHiredDate.setText("Hired Date:"+employee.getDateStart().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        lbEmployeeID.setText("Employee ID:"+String.valueOf(employee.getEmployeeId()));
-        lbAnnualLeave.setText("Annual Leave:"+String.valueOf(employee.getAnnualLeave()));
+        lbFillHiredDate.setText("Hired Date:" + employee.getDateStart().format(DateTimeFormatter.ofPattern("yyyy-MM" +
+                "-dd")));
+        lbEmployeeID.setText("Employee ID:" + String.valueOf(employee.getEmployeeId()));
+        lbAnnualLeave.setText("Annual Leave:" + String.valueOf(employee.getAnnualLeave()));
 
-        if(employee.getManagerId()!=0){
-            var manager = employeeDao.getEmployeeInfo(employee.getManagerId());
-            lbManagerName.setText("Manager:"+manager.getFullName());
-        }else{
+        if (employee.getManagerId() != 0) {
+            var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
+            lbManagerName.setText("Manager:" + manager.getFullName());
+        } else {
             lbManagerName.setText("Manager: none");
         }
 

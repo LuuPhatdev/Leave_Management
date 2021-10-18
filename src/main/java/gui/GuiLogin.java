@@ -42,7 +42,6 @@ public class GuiLogin extends JFrame {
         setBounds(100, 100, 450, 250);
         setTitle("LEAVE MANAGEMENT");
 
-
         btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 btnLoginActionPerformed(e);

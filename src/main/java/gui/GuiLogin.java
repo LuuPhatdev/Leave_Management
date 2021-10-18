@@ -64,7 +64,7 @@ public class GuiLogin extends JFrame {
                     JOptionPane.showMessageDialog(null, "Login Success");
                 } else if (user.getRoleId() == 2) {
                     dispose();
-                    var emp = new GuiEmployee(user.getEmloyeeId());
+                    var emp = new GuiEmployee(userName);
                     JOptionPane.showMessageDialog(null, "Login Success");
                 } else if (user.getRoleId() == 3) {
                     dispose();

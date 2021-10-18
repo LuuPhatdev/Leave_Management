@@ -1,8 +1,6 @@
 package entity;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class Employee {
     private int employeeId;
@@ -10,14 +8,16 @@ public class Employee {
     private int gender;
     private LocalDate dateOfBirth;
     private LocalDate dateStart;
-    private String phone;
+    private int phone;
     private String email;
     private double annualLeave;
+    private int accountId;
     private int departmentId;
     private int managerId;
 
-    public Employee(int employeeId, String fullName, int gender, LocalDate dateOfBirth, LocalDate dateStart, String phone, String email,
-                    double annualLeave, int departmentId, int managerId) {
+    public Employee(int employeeId, String fullName, int gender, LocalDate dateOfBirth, LocalDate dateStart,
+                    int phone, String email,
+                    double annualLeave, int accountId, int departmentId, int managerId) {
         this.employeeId = employeeId;
         this.fullName = fullName;
         this.gender = gender;
@@ -26,6 +26,7 @@ public class Employee {
         this.phone = phone;
         this.email = email;
         this.annualLeave = annualLeave;
+        this.accountId = accountId;
         this.departmentId = departmentId;
         this.managerId = managerId;
     }
@@ -65,11 +66,15 @@ public class Employee {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getPhone() {
+    public LocalDate getDateStart() { return dateStart; }
+
+    public void setDateStart(LocalDate dateStart) { this.dateStart = dateStart; }
+
+    public int getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(int phone) {
         this.phone = phone;
     }
 
@@ -89,13 +94,19 @@ public class Employee {
         this.annualLeave = annualLeave;
     }
 
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
     public int getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(int departmentId) {
-        this.departmentId = departmentId;
-    }
+    public void setDepartmentId(int departmentId) { this.departmentId = departmentId; }
 
     public int getManagerId() {
         return managerId;
@@ -105,23 +116,19 @@ public class Employee {
         this.managerId = managerId;
     }
 
-    public LocalDate getDateStart() {return dateStart;}
-
-    public void setDateStart(LocalDate dateStart) {this.dateStart = dateStart;}
-
-
     @Override
     public String toString() {
         return "Employee{" +
                 "employeeId=" + employeeId +
                 ", fullName='" + fullName + '\'' +
                 ", gender=" + gender +
-                ", dateOfBirth=" + dateOfBirth.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) +
+                ", dateOfBirth=" + dateOfBirth +
+                ", dateStart=" + dateStart +
                 ", phone=" + phone +
                 ", email='" + email + '\'' +
                 ", annualLeave=" + annualLeave +
+                ", accountId=" + accountId +
                 ", departmentId=" + departmentId +
-                ", datestart=" + dateStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) +
                 ", managerId=" + managerId +
                 '}';
     }

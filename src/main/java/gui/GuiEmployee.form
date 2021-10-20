@@ -8,7 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <tabbedpane id="6b9ce" binding="tabbedPane1" default-binding="true">
+      <tabbedpane id="6b9ce" binding="request">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="200" height="200"/>
@@ -175,6 +175,106 @@
                 </constraints>
                 <properties>
                   <editable value="false"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="17124" binding="requestLeave" layout-manager="GridLayoutManager" row-count="7" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <tabbedpane title="Request"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="3a280" class="javax.swing.JLabel" binding="lbRequestLeave">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Request to leave form"/>
+                </properties>
+              </component>
+              <vspacer id="d148b">
+                <constraints>
+                  <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+              <component id="15149" class="javax.swing.JLabel" binding="lbLeaveType">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Leave Type:"/>
+                </properties>
+              </component>
+              <component id="a05db" class="javax.swing.JComboBox" binding="cBLeaveType">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="Sick leave"/>
+                    <item value="Casual leave"/>
+                    <item value="Public holiday"/>
+                    <item value="Religious holidays"/>
+                    <item value="Maternity leave"/>
+                    <item value="Paternity leave"/>
+                    <item value="Bereavement leave"/>
+                    <item value="Compensatory leave"/>
+                    <item value="Sabbatical leave"/>
+                    <item value="Unpaid Leave"/>
+                  </model>
+                </properties>
+              </component>
+              <component id="d55e0" class="javax.swing.JLabel" binding="lbdateStart">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Date Start"/>
+                </properties>
+              </component>
+              <component id="b270" class="com.toedter.calendar.JDateChooser" binding="jDateStartChooser" custom-create="true">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </component>
+              <component id="4dcb2" class="javax.swing.JLabel" binding="lbDateEnd">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Date End"/>
+                </properties>
+              </component>
+              <component id="ca7a5" class="com.toedter.calendar.JDateChooser" binding="jDateEndChooser" custom-create="true">
+                <constraints>
+                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </component>
+              <component id="33a8a" class="javax.swing.JButton" binding="btnSendRequest">
+                <constraints>
+                  <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Send Request"/>
+                </properties>
+              </component>
+              <component id="27350" class="javax.swing.JTextArea" binding="txtARequestDescription">
+                <constraints>
+                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="50"/>
+                  </grid>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="857ac" class="javax.swing.JLabel" binding="lbRequestDescription">
+                <constraints>
+                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Description"/>
                 </properties>
               </component>
             </children>

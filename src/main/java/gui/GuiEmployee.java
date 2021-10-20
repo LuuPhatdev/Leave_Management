@@ -156,6 +156,7 @@ public class GuiEmployee extends JFrame {
             }
             if(Double.valueOf(amount)<=employee.getAnnualLeave()){
                 requestForm.setAmount(amount);
+                employee.setAnnualLeave(employee.getAnnualLeave()-Double.valueOf(amount));
             }else{
                 JOptionPane.showMessageDialog(null, "exceeded value of annual leave: "+Math.round(employee.getAnnualLeave()));
                 break;
@@ -171,6 +172,7 @@ public class GuiEmployee extends JFrame {
             }
             requestForm.setRequestDescription(txtARequestDescription.getText());
             rLeaveDao.insertRequestLeave(requestForm);
+            employeeDao.updateSingleEmployee(employee);
             check = 0;
         }
     }

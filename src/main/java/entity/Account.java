@@ -1,14 +1,15 @@
 package entity;
 
 
+import dao.AccountDao;
 import dao.LoginDao;
 
 public class Account {
-    private int accountId;
-    private String userName;
-    private String password;
-    private int emloyeeId;
-    private int roleId;
+    protected int accountId;
+    protected String userName;
+    protected String password;
+    protected int emloyeeId;
+    protected int roleId;
 
     public Account(int accountId, String userName, String password, int emloyeeId, int roleId) {
         this.accountId = accountId;

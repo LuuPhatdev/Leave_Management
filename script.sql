@@ -107,3 +107,21 @@ values (1, 1, '2023-05-09', '2023-06-09', 'accepted', 'leeyanxmen@gmail.com', 11
 insert into request(employee_id, leave_id, date_start, date_end, request_status, request_to, amount)
 values (2, 3, '2023-05-09', '2023-06-09', 'accepted', 'leeyanxmen@gmail.com', 11)
 go
+
+-- Insert employee --
+create proc insertEmployee @dep_id int, @fullname varchar(25), @gender bit, @date_of_birth date, @phone varchar(15),
+                           @email varchar(50), @date_start date, @annual_leave double precision, @manager_id int
+as
+begin
+    insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
+    values (@dep_id, @fullname, @gender, @date_of_birth, @phone, @email, @date_start, @annual_leave, @manager_id)
+end
+go
+
+-- select all account --
+create proc seAllAccount
+as
+begin
+    select * from account
+end
+go

@@ -1,19 +1,28 @@
 package common;
 
-import entity.Account;
+import dao.EmployeeDao;
+import dao.LeaveTypeDao;
 import entity.Employee;
+import entity.RequestLeave;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.swing.*;
+import java.time.format.DateTimeFormatter;
 
 //
 public class SendMail {
-	public static void sendClientInfo(Employee user,Account account) {
-		var fromEmail = ""; // --> Input your email here
-		var password = ""; // --> Input your password here
-		var to = user.getEmail();
+	public static void sendMailForRequestLeave(RequestLeave rLeave) {
+		var employeeDao = new EmployeeDao();
+		var lTypeDao = new LeaveTypeDao();
+
+		var employee = employeeDao.getEmployeeByEmployeeId(rLeave.getEmployeeID());
+		var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
+		var lType = lTypeDao.getLeaveTypeInfoByID(rLeave.getLeaveID());
+		var fromEmail = "emailforleavemanagement@gmail.com"; // --> Input your email here
+		var password = "leavemanagement123"; // --> Input your password here
+		var to = manager.getEmail();
 		var host = "smtp.gmail.com";
 		var props = System.getProperties();
 
@@ -32,8 +41,16 @@ public class SendMail {
 		try {
 			MimeMessage msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(fromEmail));
-			msg.setSubject("Your Login Account Infomation:");
-			msg.setText("Username:" + account.getUserName() + "\n" + "Password:" + account.getPassword() + "\n");
+			msg.setSubject("Requesting for leave:");
+			msg.setText("From: "+employee.getFullName()+"\n"+
+					"ID: "+employee.getEmployeeId()+"\n"+
+					"Email: "+employee.getEmail()+"\n"+
+					"starting: "+rLeave.getDateStart().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+"\n"+
+					"to: "+rLeave.getDateEnd().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+"\n"+
+					"Leave Type: "+lType.getLeaveType()+"\n"+
+					"Description: "+rLeave.getRequestDescription()+"\n"+
+					"Please log in to approve or deny this request."
+			);
 			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			Transport.send(msg);
 			JOptionPane.showMessageDialog(null, "Process Successful!");

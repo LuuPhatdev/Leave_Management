@@ -85,23 +85,27 @@ public class GuiEmployee extends JFrame {
 
         tfFullName.setText(employee.getFullName());
         tfDepartment.setText(department.getDepTitle());
+
         switch (employee.getGender()) {
             case 1 -> tfGender.setText("male");
             case 0 -> tfGender.setText("female");
             case -1 -> tfGender.setText("undisclosed");
             default -> tfGender.setText("error");
         }
+
         tfBirthday.setText(employee.getDateOfBirth().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         btnSendRequest.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 btnSendRequestActionPerformed(e);
             }
         });
+
         jDateStartChooser.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 jDateStartChooserPropertyChange(evt);
             }
         });
+
         jDateEndChooser.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 jDateEndChooserPropertyChange(evt);
@@ -155,6 +159,7 @@ public class GuiEmployee extends JFrame {
                         .count();
                 amount += Math.toIntExact(diffDate);
             }
+
             if(Double.valueOf(amount)<=employee.getAnnualLeave()){
                 requestForm.setAmount(amount);
                 employee.setAnnualLeave(employee.getAnnualLeave()-Double.valueOf(amount));

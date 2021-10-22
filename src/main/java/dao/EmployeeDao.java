@@ -54,6 +54,7 @@ public class EmployeeDao {
         }
         return employees.get(0);
     }
+
     public void updateSingleEmployee(Employee employee){
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();
              var cs = connect.prepareStatement("UPDATE employee SET dep_id = ?, fullname = ?, gender = ?, date_of_birth = ?, " +

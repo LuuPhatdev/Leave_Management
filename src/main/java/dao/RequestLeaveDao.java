@@ -45,7 +45,6 @@ public class RequestLeaveDao {
             cs.setString(7, rLeave.getRequestDescription());
             cs.setInt(8, rLeave.getAmount());
             cs.executeUpdate();
-            SendMail.sendMailForRequestLeave(rLeave);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }

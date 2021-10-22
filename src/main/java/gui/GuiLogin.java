@@ -52,7 +52,6 @@ public class GuiLogin extends JFrame {
     private void btnLoginActionPerformed(ActionEvent e) {
         String userName = txtUseName.getText().trim();
         String password = String.valueOf(txtPassword.getPassword()).trim();
-
         if (userName.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please input username or password");
         } else {

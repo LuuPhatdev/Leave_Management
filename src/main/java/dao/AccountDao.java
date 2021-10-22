@@ -46,4 +46,18 @@ public class AccountDao {
         }
         return listRole.get(0);
     }
+    public int getAdminID(){
+        var adminID = 0;
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from account where role_id = 1");
+        ) {
+            var rs = cs.executeQuery();
+            while (rs.next()){
+                adminID = rs.getInt("employee_id");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return adminID;
+    }
 }

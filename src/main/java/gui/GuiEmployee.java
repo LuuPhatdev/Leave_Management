@@ -2,26 +2,25 @@ package gui;
 
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JTextFieldDateEditor;
-import dao.DepartmentDao;
-import dao.EmployeeDao;
-import dao.LeaveTypeDao;
-import dao.RequestLeaveDao;
+import dao.*;
+import entity.AnnualLeave;
 import entity.LeaveType;
 import entity.RequestLeave;
 import helper.Validation;
 
+import javax.ejb.Schedule;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 
 public class GuiEmployee extends JFrame {
     private final int employeeID;
@@ -54,13 +53,21 @@ public class GuiEmployee extends JFrame {
     private JButton btnSendRequest;
     private JTextArea txtARequestDescription;
     private JLabel lbRequestDescription;
+    private JPanel annualLeaveHistory;
+    private JTable tbAnnualLeave;
+    private JComboBox cbGroupByYear;
+    private EmployeeDao employeeDao = new EmployeeDao();
+    private DepartmentDao departmentDao = new DepartmentDao();
+    private AnnualLeaveDao annualLeaveDao = new AnnualLeaveDao();
+    private LeaveTypeDao lTypeDao = new LeaveTypeDao();
+    private RequestLeaveDao rLeaveDao = new RequestLeaveDao();
+    private AccountDao accountDao = new AccountDao();
 
     public GuiEmployee(int empID) {
         this.employeeID = empID;
-        var employeeDao = new EmployeeDao();
         var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
-        var departmentDao = new DepartmentDao();
         var department = departmentDao.getDepartmentInfo(employee.getDepartmentId());
+        var allYears = annualLeaveDao.groupByYear();
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,6 +75,7 @@ public class GuiEmployee extends JFrame {
         setTitle("User Management");
         setVisible(true);
 
+//        Employee Info
         lbPhoneNumber.setText(String.valueOf(employee.getPhone()));
         lbEmail.setText(employee.getEmail());
         lbFillHiredDate.setText("Hired Date:" + employee.getDateStart().format(DateTimeFormatter.ofPattern("yyyy-MM" +
@@ -96,6 +104,8 @@ public class GuiEmployee extends JFrame {
                 btnSendRequestActionPerformed(e);
             }
         });
+
+//        sendRequest
         jDateStartChooser.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 jDateStartChooserPropertyChange(evt);
@@ -106,7 +116,62 @@ public class GuiEmployee extends JFrame {
                 jDateEndChooserPropertyChange(evt);
             }
         });
+
+//        historyAnnualLeave
+        var count = 0;
+        cbGroupByYear.addItem("...");
+        while(allYears.size()>count){
+            cbGroupByYear.addItem(allYears.get(count));
+            count++;
+        }
+        String[] collumnNames = {"Date Annual Leave", "Description", "Used", "Accrued", "Balance"};
+        DefaultTableModel tableModel = new DefaultTableModel(collumnNames, 0);
+        var employeeAnnualLeaveList = annualLeaveDao.getListAnnualLeaveByEmployeeID(employeeID);
+        count = 0;
+        while (employeeAnnualLeaveList.size()>count){
+            var dateAnnualLeave = employeeAnnualLeaveList.get(count).getDateTimeOff();
+            var descriptionAnnualLeave = employeeAnnualLeaveList.get(count).getDescriptionTimeOff();
+            var usedAnnualLeave = employeeAnnualLeaveList.get(count).getUsed();
+            var accruedAnnualLeave = employeeAnnualLeaveList.get(count).getAccrued();
+            var balanceAnnualLeave = employeeAnnualLeaveList.get(count).getBalance();
+            Object[] data = {dateAnnualLeave, descriptionAnnualLeave, usedAnnualLeave, accruedAnnualLeave, balanceAnnualLeave};
+            tableModel.addRow(data);
+            count++;
+        }
+        tbAnnualLeave.setModel(tableModel);
+
+        cbGroupByYear.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cbGroupByYearActionPerformed(e);
+            }
+        });
     }
+
+    private void cbGroupByYearActionPerformed(ActionEvent e) {
+        List<AnnualLeave> listSelectedByYear = new ArrayList<>();
+        if(Objects.equals(cbGroupByYear.getSelectedItem().toString(), "...")){
+            listSelectedByYear = annualLeaveDao.getListAnnualLeaveByEmployeeID(employeeID);
+        }else{
+            var yearSelected = (int) cbGroupByYear.getSelectedItem();
+            listSelectedByYear = annualLeaveDao.getListAnnualLeaveByYear(employeeID, yearSelected);
+        }
+        String[] collumnNames = {"Date Annual Leave", "Description", "Used", "Accrued", "Balance"};
+        DefaultTableModel tableModel = new DefaultTableModel(collumnNames, 0);
+        var count = 0;
+        while (listSelectedByYear.size()>count){
+            var dateAnnualLeave = listSelectedByYear.get(count).getDateTimeOff();
+            var descriptionAnnualLeave = listSelectedByYear.get(count).getDescriptionTimeOff();
+            var usedAnnualLeave = listSelectedByYear.get(count).getUsed();
+            var accruedAnnualLeave = listSelectedByYear.get(count).getAccrued();
+            var balanceAnnualLeave = listSelectedByYear.get(count).getBalance();
+            Object[] data = {dateAnnualLeave, descriptionAnnualLeave, usedAnnualLeave, accruedAnnualLeave, balanceAnnualLeave};
+            tableModel.addRow(data);
+            count++;
+        }
+        tbAnnualLeave.setModel(tableModel);
+        tbAnnualLeave.repaint();
+    }
+
 
     private void jDateEndChooserPropertyChange(PropertyChangeEvent evt) {
         jDateStartChooser.getJCalendar().setMaxSelectableDate(jDateEndChooser.getDate());
@@ -119,13 +184,11 @@ public class GuiEmployee extends JFrame {
 
     private void btnSendRequestActionPerformed(ActionEvent e){
         var lType = new LeaveType();
-        var lTypeDao = new LeaveTypeDao();
         lType = lTypeDao.getLeaveTypeInfoByName(cBLeaveType.getSelectedItem().toString());
-        var employeeDao = new EmployeeDao();
         var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
         var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
+        var admin = employeeDao.getEmployeeByEmployeeId(accountDao.getAdminID());
         var requestForm = new RequestLeave();
-        var rLeaveDao = new RequestLeaveDao();
         var check = 1;
 
         while(check > 0){
@@ -138,11 +201,14 @@ public class GuiEmployee extends JFrame {
             requestForm.setDateStart(jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
             requestForm.setDateEnd(jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
             requestForm.setRequestStatus("pending");
-            requestForm.setRequestTo(manager.getEmail());
+            if(lType.getLeaveID() == 1 || lType.getLeaveID() == 2){
+                requestForm.setRequestTo(manager.getEmail());
+            }else{
+                requestForm.setRequestTo(admin.getEmail());
+            }
 
             var amount = 0;
             if(jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate())!=0){
-//                getDayOfWeek()
                 if(jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek()!=DayOfWeek.SATURDAY||
                         jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek()!=DayOfWeek.SUNDAY){
                     amount = 1;
@@ -156,7 +222,6 @@ public class GuiEmployee extends JFrame {
             }
             if(Double.valueOf(amount)<=employee.getAnnualLeave()){
                 requestForm.setAmount(amount);
-                employee.setAnnualLeave(employee.getAnnualLeave()-Double.valueOf(amount));
             }else{
                 JOptionPane.showMessageDialog(null, "exceeded value of annual leave: "+Math.round(employee.getAnnualLeave()));
                 break;
@@ -170,9 +235,8 @@ public class GuiEmployee extends JFrame {
                 JOptionPane.showMessageDialog(null, "maximum 200 letters is allowed in description.");
                 break;
             }
-            requestForm.setRequestDescription(txtARequestDescription.getText());
+            requestForm.setRequestDescription(txtARequestDescription.getText().trim());
             rLeaveDao.insertRequestLeave(requestForm);
-            employeeDao.updateSingleEmployee(employee);
             check = 0;
         }
     }

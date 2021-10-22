@@ -14,17 +14,14 @@ public class GuiCreateAccountForm extends JFrame {
 
     private GuiAdmin guiAdmin;
     private JPanel contentPane;
-    private JTextField txtFullName;
     private JButton btnCreate;
-    private JLabel errFullName;
     private JTextField txtUserName;
     private JLabel errUserName;
-    private JPasswordField txtConfirmPassword;
     private JTextField txtPassword;
     private JLabel errPassword;
-    private JLabel errConfirmPassword;
     private JTextField txtRole;
     private JLabel errRole;
+    private JTextField txtEmployeeId;
 
     public GuiCreateAccountForm(GuiAdmin guiAdmin) {
         this.guiAdmin = guiAdmin;
@@ -51,11 +48,13 @@ public class GuiCreateAccountForm extends JFrame {
 
     private void btnCreateActionPerformed(ActionEvent e) {
         var dao = new AccountDao();
-        String userName = txtUserName.getText();
-        String password = txtPassword.getText();
-        String role = txtRole.getText();
+        var employeeId = txtEmployeeId.getText();
+        var userName = txtUserName.getText();
+        var password = txtPassword.getText();
+        var role = txtRole.getText();
 
         var account = new Account();
+        account.setEmloyeeId(Integer.parseInt(employeeId));
         account.setRoleId(Integer.parseInt(role));
         account.setUserName(userName);
         account.setPassword(password);

@@ -11,18 +11,33 @@ import java.util.List;
 public class AccountDao {
     public void createAccount(Account account) {
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();
-             var cs = connect.prepareCall("{call insertAccount(?,?,?)}");
+             var cs = connect.prepareCall("{call insertAccount(?,?,?,?)}");
         ) {
-            cs.setInt(1, account.getRoleId());
-            cs.setString(2, account.getUserName());
-            cs.setString(3, account.getPassword());
+            cs.setInt(1, account.getEmloyeeId());
+            cs.setInt(2, account.getRoleId());
+            cs.setString(3, account.getUserName());
+            cs.setString(4, account.getPassword());
             cs.executeUpdate();
             JOptionPane.showMessageDialog(null, "success insert");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-    
+
+    public void updateAccount(Account account){
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareCall("{call updateAccount(?,?,?)}");
+        ) {
+            cs.setInt(1, account.getEmloyeeId());
+            cs.setString(2, account.getUserName());
+            cs.setString(3, account.getPassword());
+            cs.executeUpdate();
+            JOptionPane.showMessageDialog(null, "success update");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
     public List<Account> getListAccounts() {
         List<Account> listAccounts = new ArrayList<>();
 

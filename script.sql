@@ -118,10 +118,30 @@ begin
 end
 go
 
--- select all account --
+-- Insert Account ---
+create proc insertAccount @employee_id int, @role_id int, @username varchar(25), @pass varchar(25)
+as
+begin
+    insert into account(employee_id, role_id, username, pass)
+    values (@employee_id, @role_id, @username, @pass)
+end
+go
+
+-- Select all account --
 create proc seAllAccount
 as
 begin
     select * from account
 end
 go
+
+-- Update Account --
+alter proc updateAccount @employee_id int, @username varchar(25), @pass varchar(25)
+as
+begin
+    update account
+    set
+        username=@username,
+        pass=@pass
+    where employee_id = @employee_id
+end

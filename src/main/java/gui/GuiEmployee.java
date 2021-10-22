@@ -160,22 +160,25 @@ public class GuiEmployee extends JFrame {
                 amount += Math.toIntExact(diffDate);
             }
 
-            if(Double.valueOf(amount)<=employee.getAnnualLeave()){
+            if((double) amount <=employee.getAnnualLeave()){
                 requestForm.setAmount(amount);
-                employee.setAnnualLeave(employee.getAnnualLeave()-Double.valueOf(amount));
+                employee.setAnnualLeave(employee.getAnnualLeave()- (double) amount);
             }else{
                 JOptionPane.showMessageDialog(null, "exceeded value of annual leave: "+Math.round(employee.getAnnualLeave()));
                 break;
             }
+
             if(txtARequestDescription.getText().trim().length()==0||
                     txtARequestDescription.getText()==null){
                 JOptionPane.showMessageDialog(null, "please do not leave this description empty.");
                 break;
             }
+
             if(txtARequestDescription.getText().trim().length() > 200){
                 JOptionPane.showMessageDialog(null, "maximum 200 letters is allowed in description.");
                 break;
             }
+
             requestForm.setRequestDescription(txtARequestDescription.getText());
             rLeaveDao.insertRequestLeave(requestForm);
             employeeDao.updateSingleEmployee(employee);

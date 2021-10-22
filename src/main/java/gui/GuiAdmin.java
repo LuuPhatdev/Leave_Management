@@ -95,6 +95,18 @@ public class GuiAdmin extends JFrame {
                 btnAddEmployeeActionPerformed(e);
             }
         });
+
+        btnUpdate.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                btnUpdateActionPerformed(e);
+            }
+        });
+    }
+
+    private void btnUpdateActionPerformed(MouseEvent e) {
+        var dialog= new GuiUpdate(this);
+        dialog.setVisible(true);
+        this.setEnabled(false);
     }
 
     private void btnShowListAccount(MouseEvent e) {
@@ -139,20 +151,7 @@ public class GuiAdmin extends JFrame {
         var model = new DefaultTableModel() {
             @Override
             public Class<?> getColumnClass(int column) {
-                return switch (column) {
-                    case 0 -> String.class;
-                    case 1 -> String.class;
-                    case 2 -> String.class;
-                    case 3 -> String.class;
-                    case 4 -> String.class;
-                    case 5 -> String.class;
-                    case 6 -> String.class;
-                    case 7 -> String.class;
-                    case 8 -> String.class;
-                    case 9 -> String.class;
-
-                    default -> String.class;
-                };
+                return String.class;
             }
 
             @Override
@@ -191,13 +190,13 @@ public class GuiAdmin extends JFrame {
     }
 
     private void btnCreateAccountActionPerformed(MouseEvent e) {
-        GuiCreateAccountForm form = new GuiCreateAccountForm(this);
+        var form = new GuiCreateAccountForm(this);
         form.setVisible(true);
         this.setEnabled(false);
     }
 
     private void btnAddEmployeeActionPerformed(MouseEvent e) {
-        GuiCreateEmployeeForm form = new GuiCreateEmployeeForm(this);
+        var form = new GuiCreateEmployeeForm(this);
         form.setVisible(true);
         this.setEnabled(false);
     }

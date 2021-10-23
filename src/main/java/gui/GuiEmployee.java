@@ -124,10 +124,12 @@ public class GuiEmployee extends JFrame {
             cbGroupByYear.addItem(allYears.get(count));
             count++;
         }
+
         String[] collumnNames = {"Date Annual Leave", "Description", "Used", "Accrued", "Balance"};
         DefaultTableModel tableModel = new DefaultTableModel(collumnNames, 0);
         var employeeAnnualLeaveList = annualLeaveDao.getListAnnualLeaveByEmployeeID(employeeID);
         count = 0;
+
         while (employeeAnnualLeaveList.size()>count){
             var dateAnnualLeave = employeeAnnualLeaveList.get(count).getDateTimeOff();
             var descriptionAnnualLeave = employeeAnnualLeaveList.get(count).getDescriptionTimeOff();
@@ -155,9 +157,11 @@ public class GuiEmployee extends JFrame {
             var yearSelected = (int) cbGroupByYear.getSelectedItem();
             listSelectedByYear = annualLeaveDao.getListAnnualLeaveByYear(employeeID, yearSelected);
         }
+
         String[] collumnNames = {"Date Annual Leave", "Description", "Used", "Accrued", "Balance"};
         DefaultTableModel tableModel = new DefaultTableModel(collumnNames, 0);
         var count = 0;
+
         while (listSelectedByYear.size()>count){
             var dateAnnualLeave = listSelectedByYear.get(count).getDateTimeOff();
             var descriptionAnnualLeave = listSelectedByYear.get(count).getDescriptionTimeOff();
@@ -171,7 +175,6 @@ public class GuiEmployee extends JFrame {
         tbAnnualLeave.setModel(tableModel);
         tbAnnualLeave.repaint();
     }
-
 
     private void jDateEndChooserPropertyChange(PropertyChangeEvent evt) {
         jDateStartChooser.getJCalendar().setMaxSelectableDate(jDateEndChooser.getDate());
@@ -198,9 +201,11 @@ public class GuiEmployee extends JFrame {
                 JOptionPane.showMessageDialog(null, "please select days for Day start and Day end.");
                 break;
             }
+
             requestForm.setDateStart(jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
             requestForm.setDateEnd(jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
             requestForm.setRequestStatus("pending");
+
             if(lType.getLeaveID() == 1 || lType.getLeaveID() == 2){
                 requestForm.setRequestTo(manager.getEmail());
             }else{
@@ -220,21 +225,25 @@ public class GuiEmployee extends JFrame {
                         .count();
                 amount += Math.toIntExact(diffDate);
             }
-            if(Double.valueOf(amount)<=employee.getAnnualLeave()){
+
+            if((double) amount <=employee.getAnnualLeave()){
                 requestForm.setAmount(amount);
             }else{
                 JOptionPane.showMessageDialog(null, "exceeded value of annual leave: "+Math.round(employee.getAnnualLeave()));
                 break;
             }
+
             if(txtARequestDescription.getText().trim().length()==0||
                     txtARequestDescription.getText()==null){
                 JOptionPane.showMessageDialog(null, "please do not leave this description empty.");
                 break;
             }
+
             if(txtARequestDescription.getText().trim().length() > 200){
                 JOptionPane.showMessageDialog(null, "maximum 200 letters is allowed in description.");
                 break;
             }
+
             requestForm.setRequestDescription(txtARequestDescription.getText().trim());
             rLeaveDao.insertRequestLeave(requestForm);
             check = 0;

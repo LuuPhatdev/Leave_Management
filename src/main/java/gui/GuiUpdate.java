@@ -5,9 +5,8 @@ import entity.Account;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class GuiUpdate extends JFrame {
     private final GuiAdmin guiAdmin;
@@ -33,7 +32,7 @@ public class GuiUpdate extends JFrame {
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 550, 250);
+        setBounds(100, 100, 550, 400);
         setLocationRelativeTo(null);
         setTitle("Update Employee");
 
@@ -41,12 +40,6 @@ public class GuiUpdate extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 GuiUpdate.this.guiAdmin.setEnabled(true);
-            }
-        });
-
-        tableShowlistAccount.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                tableShowListAccountActionPerformed(e);
             }
         });
 
@@ -67,40 +60,35 @@ public class GuiUpdate extends JFrame {
                 btnSearchActionPerformed(e);
             }
         });
+
+        tableShowlistAccount.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                rowSelectingActionPerformed(e);
+            }
+        });
     }
 
     private void btnSearchActionPerformed(ActionEvent e) {
         if (txtSearchByName.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please input User Name");
         } else {
-            Account acc = Account.getAccountFromUserName(txtSearchByName.getText());
-            var model = new DefaultTableModel() {
-                @Override
-                public Class<?> getColumnClass(int column) {
-                    return String.class;
-                }
+            try {
+                Account acc = Account.getAccountFromUserName(txtSearchByName.getText().trim().replaceAll(("\\s"), ""));
+                String[] columnTitle = {"EMPLOYEE ID", "ROLE ID", "USER NAME", "PASSWORD"};
+                DefaultTableModel model = new DefaultTableModel(columnTitle, 0);
 
-                @Override
-                public boolean isCellEditable(int row, int col) {
-                    return switch (col) {
-                        case 0, 1, 2, 3 -> false;
-                        default -> true;
-                    };
-                }
-            };
+                model.addRow(new Object[]{
+                        acc.getEmloyeeId(),
+                        acc.getRoleId(),
+                        acc.getUserName(),
+                        acc.getPassword()
+                });
+                tableShowlistAccount.setModel(model);
+            }catch (Exception em){
+              JOptionPane.showMessageDialog(null,"Account does not exists!");
+              txtSearchByName.setText("");
+            }
 
-            model.addColumn("EMPLOYEE ID");
-            model.addColumn("ROLE ID");
-            model.addColumn("USER NAME");
-            model.addColumn("PASSWORD");
-
-            model.addRow(new Object[]{
-                    acc.getEmloyeeId(),
-                    acc.getRoleId(),
-                    acc.getUserName(),
-                    acc.getPassword()
-            });
-            tableShowlistAccount.setModel(model);
         }
     }
 
@@ -126,7 +114,7 @@ public class GuiUpdate extends JFrame {
         dao.updateAccount(account);
     }
 
-    private void tableShowListAccountActionPerformed(MouseEvent e) {
+    private void rowSelectingActionPerformed(MouseEvent e) {
         var rowindex = tableShowlistAccount.getSelectedRow();
         txtEmployeeId.setText(tableShowlistAccount.getValueAt(rowindex, 0).toString());
         txtRoleId.setText(tableShowlistAccount.getValueAt(rowindex, 1).toString());
@@ -137,25 +125,8 @@ public class GuiUpdate extends JFrame {
 
     private void showListAccount() {
         AccountDao usersDao = new AccountDao();
-        var model = new DefaultTableModel() {
-            @Override
-            public Class<?> getColumnClass(int column) {
-                return String.class;
-            }
-
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return switch (col) {
-                    case 0, 1, 2, 3 -> false;
-                    default -> true;
-                };
-            }
-        };
-
-        model.addColumn("EMPLOYEE ID");
-        model.addColumn("ROLE ID");
-        model.addColumn("USER NAME");
-        model.addColumn("PASSWORD");
+        String[] columnTitle = {"EMPLOYEE ID", "ROLE ID", "USER NAME", "PASSWORD"};
+        DefaultTableModel model = new DefaultTableModel(columnTitle, 0);
 
         usersDao.getListAccounts().forEach(user -> model.addRow(new Object[]{
                 user.getEmloyeeId(),
@@ -163,5 +134,32 @@ public class GuiUpdate extends JFrame {
                 user.getUserName(),
                 user.getPassword(),}));
         tableShowlistAccount.setModel(model);
+
+        final JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem viewProfile = new JMenuItem("Delete");
+
+        viewProfile.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                deleteAccount();
+            }
+        });
+
+        popupMenu.add(viewProfile);
+        tableShowlistAccount.setComponentPopupMenu(popupMenu);
+    }
+
+    private void deleteAccount() {
+        var dao = new AccountDao();
+        var employeeId = txtEmployeeId.getText();
+
+        var account = new Account();
+        account.setEmloyeeId(Integer.parseInt(employeeId));
+        dao.deleteAccount(account);
+        showListAccount();
+
+        txtRoleId.setText("");
+        txtEmployeeId.setText("");
+        txtUserName.setText("");
+        txtPassword.setText("");
     }
 }

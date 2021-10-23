@@ -40,6 +40,7 @@ public class GuiLogin extends JFrame {
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 450, 250);
+        setLocationRelativeTo(null);
         setTitle("LEAVE MANAGEMENT");
 
         btnLogin.addActionListener(new ActionListener() {

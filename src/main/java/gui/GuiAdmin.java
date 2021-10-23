@@ -28,7 +28,6 @@ public class GuiAdmin extends JFrame {
     private JPanel btnLogOut;
     private JPanel btnAddEmployee;
     private JPanel btnUpdate;
-    private JPanel btnDelete;
     private JPanel btnShowListAccount;
     private JTable accountTable;
     private JPanel btnShowListEmployee;

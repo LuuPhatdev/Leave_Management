@@ -55,36 +55,40 @@ public class GuiCreateEmployeeForm extends JFrame {
     }
 
     private void btnCreateEmployeeActionPerformed(ActionEvent e) {
-        var dao = new EmployeeDao();
+        try{
+            var dao = new EmployeeDao();
 
-        var departmentid = Integer.parseInt(txtDepartmentId.getText());
-        var fullName = txtFullname.getText();
-        var gender = Objects.requireNonNull(JcomboboxGender.getSelectedItem()).toString();
-        var dateOfBirth = JDateDateOfBirth.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        var phone = txtPhone.getText();
-        var email = txtEmail.getText();
-        var dateStart = JDateStart.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        var annualLeave = 0;
-        var managerId = Integer.parseInt(txtManagerId.getText());
+            var departmentid = Integer.parseInt(txtDepartmentId.getText());
+            var fullName = txtFullname.getText();
+            var gender = Objects.requireNonNull(JcomboboxGender.getSelectedItem()).toString();
+            var dateOfBirth = JDateDateOfBirth.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            var phone = txtPhone.getText();
+            var email = txtEmail.getText();
+            var dateStart = JDateStart.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            var annualLeave = 0;
+            var managerId = Integer.parseInt(txtManagerId.getText());
 
-        switch (gender) {
-            case "Male" -> gender = String.valueOf(1);
-            case "Female" -> gender = String.valueOf(0);
-            case "Other" -> gender = String.valueOf(-1);
-            default -> gender = ("Err");
+            switch (gender) {
+                case "Male" -> gender = String.valueOf(1);
+                case "Female" -> gender = String.valueOf(0);
+                case "Other" -> gender = String.valueOf(-1);
+                default -> gender = ("Err");
+            }
+
+            Employee employee = new Employee();
+            employee.setDepartmentId(departmentid);
+            employee.setFullName(fullName);
+            employee.setGender(Integer.parseInt(gender));
+            employee.setDateOfBirth(dateOfBirth);
+            employee.setPhone(phone);
+            employee.setEmail(email);
+            employee.setDateStart(dateStart);
+            employee.setAnnualLeave(annualLeave);
+            employee.setManagerId(managerId);
+            dao.crudEmployee(employee);
+        }catch (Exception em){
+            JOptionPane.showMessageDialog(null,"Please enter Employee info!");
         }
-
-        Employee employee = new Employee();
-        employee.setDepartmentId(departmentid);
-        employee.setFullName(fullName);
-        employee.setGender(Integer.parseInt(gender));
-        employee.setDateOfBirth(dateOfBirth);
-        employee.setPhone(phone);
-        employee.setEmail(email);
-        employee.setDateStart(dateStart);
-        employee.setAnnualLeave(annualLeave);
-        employee.setManagerId(managerId);
-        dao.crudEmployee(employee);
     }
 
     private void createUIComponents() {

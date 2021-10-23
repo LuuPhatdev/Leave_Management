@@ -38,6 +38,18 @@ public class AccountDao {
         }
     }
 
+    public void deleteAccount(Account account) {
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("delete from account where employee_id=?");
+        ) {
+            cs.setInt(1, account.getEmloyeeId());
+            cs.executeUpdate();
+            JOptionPane.showMessageDialog(null, "success delete");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
     public List<Account> getListAccounts() {
         List<Account> listAccounts = new ArrayList<>();
 

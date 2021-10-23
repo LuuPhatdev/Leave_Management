@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentDao {
-    public Department getDepartmentInfo(int departmentID) {
+    public Department getDepartmentInfo(int departmentId) {
         List<Department> departments = new ArrayList<>();
 
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();
              var cs = connect.prepareStatement("select * from department where dep_id = ?");) {
-            cs.setInt(1, departmentID);
+            cs.setInt(1, departmentId);
             var rs = cs.executeQuery();
             while (rs.next()) {
                 var department = new Department();

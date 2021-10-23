@@ -59,6 +59,7 @@ create table request(
                         date_end date not null,
                         request_status varchar(10) not null,
                         request_to varchar(50) not null,
+                        request_description varchar(200) not null,
                         amount int not null
 )
 
@@ -74,9 +75,9 @@ insert into department(dep_title, chief_id) values('dep B', 2)
 insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
 values(1, 'Yan Lee', 1, '1997-05-09', '0776983835', 'leeyanxmen@gmail.com', '2021-05-09', 12, NULL)
 insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
-values(1, 'Phat Luu', 1, '1997-11-15', '0123456789', 'LuuPhat@gmail.com', '2021-11-15', 7, NULL)
+values(1, 'Phat Luu', 1, '1997-11-15', '0123456789', 'LuuPhat@gmail.com', '2021-11-15', 7, 3)
 insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
-values(1, 'Nam Nhat', 1, '1997-07-22', '9876543210', 'NhatNam@gmail.com', '2021-07-22', 10, 2)
+values(1, 'Nam Nhat', 1, '1997-07-22', '9876543210', 'NhatNam@gmail.com', '2021-07-22', 10, 1)
 
 insert into account(employee_id, role_id, username, pass) values (1, 1, 'leemongyan', '12345')
 insert into account(employee_id, role_id, username, pass) values (2, 2, 'dingluuphat', '12345')
@@ -100,48 +101,10 @@ insert into leave_type(leave_type) values('Compensatory leave')
 insert into leave_type(leave_type) values('Sabbatical leave')
 insert into leave_type(leave_type) values('Unpaid Leave')
 
-insert into request(employee_id, leave_id, date_start, date_end, request_status, request_to, amount)
-values (1, 1, '2023-05-09', '2023-06-09', 'pending', 'leeyanxmen@gmail.com', 11)
-insert into request(employee_id, leave_id, date_start, date_end, request_status, request_to, amount)
-values (1, 1, '2023-05-09', '2023-06-09', 'accepted', 'leeyanxmen@gmail.com', 11)
-insert into request(employee_id, leave_id, date_start, date_end, request_status, request_to, amount)
-values (2, 3, '2023-05-09', '2023-06-09', 'accepted', 'leeyanxmen@gmail.com', 11)
+insert into request(employee_id, leave_id, date_start, date_end, request_status, request_to, request_description, amount)
+values (1, 1, '2023-05-09', '2023-06-09', 'pending', 'leeyanxmen@gmail.com', '...', 11)
+insert into request(employee_id, leave_id, date_start, date_end, request_status, request_to, request_description, amount)
+values (1, 1, '2023-05-09', '2023-06-09', 'accepted', 'leeyanxmen@gmail.com', '...', 11)
+insert into request(employee_id, leave_id, date_start, date_end, request_status, request_to, request_description, amount)
+values (2, 3, '2023-05-09', '2023-06-09', 'accepted', 'leeyanxmen@gmail.com', '...', 11)
 go
-
--- Insert employee --
-create proc insertEmployee @dep_id int, @fullname varchar(25), @gender bit, @date_of_birth date, @phone varchar(15),
-                           @email varchar(50), @date_start date, @annual_leave double precision, @manager_id int
-as
-begin
-    insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
-    values (@dep_id, @fullname, @gender, @date_of_birth, @phone, @email, @date_start, @annual_leave, @manager_id)
-end
-go
-
--- Insert Account ---
-create proc insertAccount @employee_id int, @role_id int, @username varchar(25), @pass varchar(25)
-as
-begin
-    insert into account(employee_id, role_id, username, pass)
-    values (@employee_id, @role_id, @username, @pass)
-end
-go
-
--- Select all account --
-create proc seAllAccount
-as
-begin
-    select * from account
-end
-go
-
--- Update Account --
-alter proc updateAccount @employee_id int, @username varchar(25), @pass varchar(25)
-as
-begin
-    update account
-    set
-        username=@username,
-        pass=@pass
-    where employee_id = @employee_id
-end

@@ -37,7 +37,6 @@ public class Department {
     public void setChiefID(int chiefID) {
         this.chiefID = chiefID;
     }
-
     @Override
     public String toString() {
         return "dep ID: "+depID+

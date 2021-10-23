@@ -40,7 +40,6 @@ public class GuiLogin extends JFrame {
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 450, 250);
-        setLocationRelativeTo(null);
         setTitle("LEAVE MANAGEMENT");
 
         btnLogin.addActionListener(new ActionListener() {
@@ -53,7 +52,6 @@ public class GuiLogin extends JFrame {
     private void btnLoginActionPerformed(ActionEvent e) {
         String userName = txtUseName.getText().trim();
         String password = String.valueOf(txtPassword.getPassword()).trim();
-
         if (userName.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please input username or password");
         } else {
@@ -77,4 +75,6 @@ public class GuiLogin extends JFrame {
             }
         }
     }
+
+
 }

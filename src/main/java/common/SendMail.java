@@ -14,11 +14,11 @@ import java.time.format.DateTimeFormatter;
 //
 public class SendMail {
 	public static void sendMailForRequestLeave(RequestLeave rLeave) {
-		var employeeDao = new EmployeeDao();
+        var employeeDao = new EmployeeDao();
 		var lTypeDao = new LeaveTypeDao();
 
 		var employee = employeeDao.getEmployeeByEmployeeId(rLeave.getEmployeeID());
-		var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
+        var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
 		var lType = lTypeDao.getLeaveTypeInfoByID(rLeave.getLeaveID());
 		var fromEmail = "emailforleavemanagement@gmail.com"; // --> Input your email here
 		var password = "leavemanagement123"; // --> Input your password here

@@ -32,6 +32,7 @@ public class RequestLeaveDao {
         }
         return listRequest;
     }
+
     public void insertRequestLeave(RequestLeave rLeave){
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();
              var cs = connect.prepareStatement("insert into request(employee_id, leave_id, date_start, date_end, request_status, request_to, request_description, amount)\n" +
@@ -45,7 +46,6 @@ public class RequestLeaveDao {
             cs.setString(7, rLeave.getRequestDescription());
             cs.setInt(8, rLeave.getAmount());
             cs.executeUpdate();
-            SendMail.sendMailForRequestLeave(rLeave);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }

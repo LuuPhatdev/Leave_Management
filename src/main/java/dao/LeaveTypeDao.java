@@ -23,6 +23,7 @@ public class LeaveTypeDao {
         }
         return lType;
     }
+
     public LeaveType getLeaveTypeInfoByID(int leaveTypeID) {
         LeaveType lType = new LeaveType();
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();

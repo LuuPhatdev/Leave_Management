@@ -2,13 +2,16 @@ package gui;
 
 import dao.AccountDao;
 import dao.EmployeeDao;
-import dao.LoginDao;
 import entity.Account;
 import entity.Role;
+import gui.Form.GuiCreateAccountForm;
+import gui.Form.GuiCreateEmployeeForm;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -23,7 +26,7 @@ public class GuiAdmin extends JFrame {
     private JPanel p2;
     private JPanel btn2;
     private JPanel btnLogOut;
-    private JPanel btnAddUser;
+    private JPanel btnAddEmployee;
     private JPanel btnUpdate;
     private JPanel btnDelete;
     private JPanel btnShowListAccount;
@@ -31,6 +34,7 @@ public class GuiAdmin extends JFrame {
     private JPanel btnShowListEmployee;
     private JLabel employeeName;
     private JLabel employeeRole;
+    private JPanel btnCreateAccount;
 
     public GuiAdmin(String userName) {
         this.userName = userName;
@@ -40,6 +44,7 @@ public class GuiAdmin extends JFrame {
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 900, 637);
+        setLocationRelativeTo(null);
         setTitle("User Management");
         setVisible(true);
 
@@ -78,6 +83,30 @@ public class GuiAdmin extends JFrame {
                 btnShowListEmployee(e);
             }
         });
+
+        btnCreateAccount.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                btnCreateAccountActionPerformed(e);
+            }
+        });
+
+        btnAddEmployee.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                btnAddEmployeeActionPerformed(e);
+            }
+        });
+
+        btnUpdate.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                btnUpdateActionPerformed(e);
+            }
+        });
+    }
+
+    private void btnUpdateActionPerformed(MouseEvent e) {
+        var dialog= new GuiUpdate(this);
+        dialog.setVisible(true);
+        this.setEnabled(false);
     }
 
     private void btnShowListAccount(MouseEvent e) {
@@ -85,6 +114,7 @@ public class GuiAdmin extends JFrame {
         var model = new DefaultTableModel() {
             @Override
             public Class<?> getColumnClass(int column) {
+
                 return switch (column) {
                     case 0 -> String.class;
                     case 1 -> String.class;
@@ -121,20 +151,7 @@ public class GuiAdmin extends JFrame {
         var model = new DefaultTableModel() {
             @Override
             public Class<?> getColumnClass(int column) {
-                return switch (column) {
-                    case 0 -> String.class;
-                    case 1 -> String.class;
-                    case 2 -> String.class;
-                    case 3 -> String.class;
-                    case 4 -> String.class;
-                    case 5 -> String.class;
-                    case 6 -> String.class;
-                    case 7 -> String.class;
-                    case 8 -> String.class;
-                    case 9 -> String.class;
-
-                    default -> String.class;
-                };
+                return String.class;
             }
 
             @Override
@@ -172,6 +189,17 @@ public class GuiAdmin extends JFrame {
         accountTable.setModel(model);
     }
 
+    private void btnCreateAccountActionPerformed(MouseEvent e) {
+        var form = new GuiCreateAccountForm(this);
+        form.setVisible(true);
+        this.setEnabled(false);
+    }
+
+    private void btnAddEmployeeActionPerformed(MouseEvent e) {
+        var form = new GuiCreateEmployeeForm(this);
+        form.setVisible(true);
+        this.setEnabled(false);
+    }
 
     private void btn1ActionPerformed(MouseEvent e) {
         p1.setVisible(true);

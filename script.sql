@@ -63,7 +63,7 @@ create table request(
                         amount int not null
 )
 
-    go
+go
 
 insert into role(role_title, role_description) values ('Admin', 'who can create accounts')
 insert into role(role_title, role_description) values ('Employee', 'Employee')
@@ -108,3 +108,41 @@ values (1, 1, '2023-05-09', '2023-06-09', 'accepted', 'leeyanxmen@gmail.com', '.
 insert into request(employee_id, leave_id, date_start, date_end, request_status, request_to, request_description, amount)
 values (2, 3, '2023-05-09', '2023-06-09', 'accepted', 'leeyanxmen@gmail.com', '...', 11)
 go
+
+-- Insert employee --
+create proc insertEmployee @dep_id int, @fullname varchar(25), @gender bit, @date_of_birth date, @phone varchar(15),
+                           @email varchar(50), @date_start date, @annual_leave double precision, @manager_id int
+as
+begin
+    insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
+    values (@dep_id, @fullname, @gender, @date_of_birth, @phone, @email, @date_start, @annual_leave, @manager_id)
+end
+go
+
+-- Insert Account ---
+create proc insertAccount @employee_id int, @role_id int, @username varchar(25), @pass varchar(25)
+as
+begin
+    insert into account(employee_id, role_id, username, pass)
+    values (@employee_id, @role_id, @username, @pass)
+end
+go
+
+-- Select all account --
+create proc seAllAccount
+as
+begin
+    select * from account
+end
+go
+
+-- Update Account --
+create proc updateAccount @employee_id int, @username varchar(25), @pass varchar(25)
+as
+begin
+    update account
+    set
+        username=@username,
+        pass=@pass
+    where employee_id = @employee_id
+end

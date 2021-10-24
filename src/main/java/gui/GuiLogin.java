@@ -41,6 +41,7 @@ public class GuiLogin extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 450, 250);
         setTitle("LEAVE MANAGEMENT");
+        setVisible(true);
 
         btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -67,7 +68,7 @@ public class GuiLogin extends JFrame {
                     JOptionPane.showMessageDialog(null, "Login Success");
                 } else if (user.getRoleId() == 3) {
                     dispose();
-                    var manager = new GuiManager(userName);
+                    var manager = new GuiManager(user.getEmloyeeId());
                     JOptionPane.showMessageDialog(null, "Login Success");
                 } else {
                     JOptionPane.showMessageDialog(null, "Wrong username or password");

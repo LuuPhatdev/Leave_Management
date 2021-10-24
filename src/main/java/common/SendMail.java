@@ -18,11 +18,10 @@ public class SendMail {
 		var lTypeDao = new LeaveTypeDao();
 
 		var employee = employeeDao.getEmployeeByEmployeeId(rLeave.getEmployeeID());
-        var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
 		var lType = lTypeDao.getLeaveTypeInfoByID(rLeave.getLeaveID());
 		var fromEmail = "emailforleavemanagement@gmail.com"; // --> Input your email here
 		var password = "leavemanagement123"; // --> Input your password here
-		var to = manager.getEmail();
+		var to = rLeave.getRequestTo();
 		var host = "smtp.gmail.com";
 		var props = System.getProperties();
 
@@ -50,6 +49,52 @@ public class SendMail {
 					"Leave Type: "+lType.getLeaveType()+"\n"+
 					"Description: "+rLeave.getRequestDescription()+"\n"+
 					"Please log in to approve or deny this request."
+			);
+			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			Transport.send(msg);
+			JOptionPane.showMessageDialog(null, "Process Successful!");
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+	}
+
+	public static void sendMailForRequestLeaveResult(RequestLeave rLeave) {
+		var employeeDao = new EmployeeDao();
+		var lTypeDao = new LeaveTypeDao();
+
+		var employee = employeeDao.getEmployeeByEmployeeId(rLeave.getEmployeeID());
+		var lType = lTypeDao.getLeaveTypeInfoByID(rLeave.getLeaveID());
+		var fromEmail = "emailforleavemanagement@gmail.com"; // --> Input your email here
+		var password = "leavemanagement123"; // --> Input your password here
+		var to = "leemongyan97@gmail.com";
+		var host = "smtp.gmail.com";
+		var props = System.getProperties();
+
+		props.put("mail.smtp.host", host);
+		props.put("mail.smtp.port", "587"); // --> Using pro 465 or 587 as well
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.auth", "true");
+
+		Authenticator auth = new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(fromEmail, password);
+			}
+		};
+
+		Session session = Session.getInstance(props, auth);
+		try {
+			MimeMessage msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(fromEmail));
+			msg.setSubject("Result of Requesting for leave:");
+			msg.setText("From: "+employee.getFullName()+"\n"+
+					"ID: "+employee.getEmployeeId()+"\n"+
+					"Email: "+employee.getEmail()+"\n"+
+					"starting: "+rLeave.getDateStart().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+"\n"+
+					"to: "+rLeave.getDateEnd().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+"\n"+
+					"Leave Type: "+lType.getLeaveType()+"\n"+
+					"Description: "+rLeave.getRequestDescription()+"\n"+
+					"Result of Requesting: "+rLeave.getRequestStatus()+"\n"+
+					"Please contact your manager or admin if you have questions."
 			);
 			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			Transport.send(msg);

@@ -13,6 +13,7 @@ public class GuiManager extends JFrame{
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 900, 637);
+        setLocationRelativeTo(null);
         setTitle("User Management");
         setVisible(true);
     }

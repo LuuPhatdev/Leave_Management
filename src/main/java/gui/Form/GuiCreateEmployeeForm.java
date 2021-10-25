@@ -98,4 +98,5 @@ public class GuiCreateEmployeeForm extends JFrame {
         editorDateOfBirth.setEditable(false);
         editorStart.setEditable(false);
     }
+    //phat implement solved conflict
 }

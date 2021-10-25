@@ -51,12 +51,6 @@ public class GuiUpdateEmloyee extends JFrame {
             }
         });
 
-//        btnUpdateEmployee.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                btnCreateEmployeeActionPerformed(e);
-//            }
-//        });
-
         btnUpdateEmployee.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 btnUpdateEmployeeActionPerfomerd(e);
@@ -99,8 +93,6 @@ public class GuiUpdateEmloyee extends JFrame {
             guiAdmin.showListEmployee();
             this.dispose();
     }
-
-
 
     private void createUIComponents() {
         // TODO: place custom component creation code here

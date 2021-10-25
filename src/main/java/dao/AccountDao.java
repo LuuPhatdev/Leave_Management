@@ -32,19 +32,7 @@ public class AccountDao {
             cs.setString(2, account.getUserName());
             cs.setString(3, account.getPassword());
             cs.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Updated Successfully");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-    }
-
-    public void deleteAccount(Account account) {
-        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
-             var cs = connect.prepareStatement("delete from account where employee_id=?");
-        ) {
-            cs.setInt(1, account.getEmloyeeId());
-            cs.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Delete Successfully");
+            JOptionPane.showMessageDialog(null, "success update");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }

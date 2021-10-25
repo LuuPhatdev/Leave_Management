@@ -11,6 +11,7 @@ import helper.Validation;
 
 import javax.ejb.Schedule;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -122,6 +123,8 @@ public class GuiEmployee extends JFrame {
         });
 
 //        historyAnnualLeave
+        var centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         var count = 0;
         cbGroupByYear.addItem("...");
         while (allYears.size() > count) {
@@ -155,6 +158,12 @@ public class GuiEmployee extends JFrame {
             count++;
         }
         tbAnnualLeave.setModel(tableModel);
+
+        count = 0;
+        while (count<tbAnnualLeave.getColumnCount()){
+            tbAnnualLeave.getColumnModel().getColumn(count).setCellRenderer( centerRenderer );
+            count++;
+        }
 
         cbGroupByYear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -274,6 +283,8 @@ public class GuiEmployee extends JFrame {
             var yearSelected = (int) cbGroupByYear.getSelectedItem();
             listSelectedByYear = annualLeaveDao.getListAnnualLeaveByYear(employeeID, yearSelected);
         }
+        var centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
 
         String[] collumnNames = {"Date Annual Leave", "Description", "Used(-)", "Accrued(+)", "Balance"};
         DefaultTableModel tableModel = new DefaultTableModel(collumnNames, 0){
@@ -299,6 +310,12 @@ public class GuiEmployee extends JFrame {
             count++;
         }
         tbAnnualLeave.setModel(tableModel);
+
+        count = 0;
+        while (count<tbAnnualLeave.getColumnCount()){
+            tbAnnualLeave.getColumnModel().getColumn(count).setCellRenderer( centerRenderer );
+            count++;
+        }
         tbAnnualLeave.repaint();
     }
 

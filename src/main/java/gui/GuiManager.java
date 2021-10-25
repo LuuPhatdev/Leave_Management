@@ -9,6 +9,7 @@ import entity.LeaveType;
 import entity.RequestLeave;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -122,7 +123,10 @@ public class GuiManager extends JFrame {
         });
 
 //        historyAnnualLeave
+        var centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         var count = 0;
+
         cbGroupByYear.addItem("...");
         while (allYears.size() > count) {
             cbGroupByYear.addItem(allYears.get(count));
@@ -139,6 +143,7 @@ public class GuiManager extends JFrame {
                 };
             }
         };
+
         var employeeAnnualLeaveList = annualLeaveDao.getListAnnualLeaveByEmployeeID(employeeID);
         count = 0;
 
@@ -154,6 +159,12 @@ public class GuiManager extends JFrame {
             count++;
         }
         tbAnnualLeave.setModel(tableModel);
+
+        count = 0;
+        while (count<tbAnnualLeave.getColumnCount()){
+            tbAnnualLeave.getColumnModel().getColumn(count).setCellRenderer( centerRenderer );
+            count++;
+        }
 
         cbGroupByYear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -190,6 +201,13 @@ public class GuiManager extends JFrame {
             count++;
         }
         tbRequestPending.setModel(tableModel1);
+
+        count = 0;
+        while (count<tbRequestPending.getColumnCount()){
+            tbRequestPending.getColumnModel().getColumn(count).setCellRenderer( centerRenderer );
+            count++;
+        }
+
         tbRequestPending.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 TableRequestPendingMouseListener(e, tableModel1);
@@ -311,6 +329,8 @@ public class GuiManager extends JFrame {
             var yearSelected = (int) cbGroupByYear.getSelectedItem();
             listSelectedByYear = annualLeaveDao.getListAnnualLeaveByYear(employeeID, yearSelected);
         }
+        var centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
 
         String[] collumnNames = {"Date Annual Leave", "Description", "Used(-)", "Accrued(+)", "Balance"};
         DefaultTableModel tableModel = new DefaultTableModel(collumnNames, 0){
@@ -336,6 +356,13 @@ public class GuiManager extends JFrame {
             count++;
         }
         tbAnnualLeave.setModel(tableModel);
+
+        count = 0;
+        while (count<tbAnnualLeave.getColumnCount()){
+            tbAnnualLeave.getColumnModel().getColumn(count).setCellRenderer( centerRenderer );
+            count++;
+        }
+
         tbAnnualLeave.repaint();
     }
 

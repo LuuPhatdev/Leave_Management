@@ -315,7 +315,7 @@
                     <constraints/>
                     <properties>
                       <autoCreateRowSorter value="true"/>
-                      <showVerticalLines value="false"/>
+                      <showVerticalLines value="true"/>
                     </properties>
                   </component>
                 </children>

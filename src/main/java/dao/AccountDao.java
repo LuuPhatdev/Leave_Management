@@ -32,7 +32,7 @@ public class AccountDao {
             cs.setString(2, account.getUserName());
             cs.setString(3, account.getPassword());
             cs.executeUpdate();
-            JOptionPane.showMessageDialog(null, "success update");
+            JOptionPane.showMessageDialog(null, "Updated Successfully");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -44,7 +44,7 @@ public class AccountDao {
         ) {
             cs.setInt(1, account.getEmloyeeId());
             cs.executeUpdate();
-            JOptionPane.showMessageDialog(null, "success delete");
+            JOptionPane.showMessageDialog(null, "Delete Successfully");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }

@@ -6,14 +6,15 @@ import entity.Account;
 import entity.Role;
 import gui.Form.GuiCreateAccountForm;
 import gui.Form.GuiCreateEmployeeForm;
+import gui.Form.GuiUpdateAccountForm;
+import gui.Form.GuiUpdateEmloyee;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class GuiAdmin extends JFrame {
 
@@ -34,11 +35,19 @@ public class GuiAdmin extends JFrame {
     private JLabel employeeName;
     private JLabel employeeRole;
     private JPanel btnCreateAccount;
+    private JTable tableShowAccount;
+    private JTextField txtSearchByName;
+    private JButton btnSearch;
+    private JPanel panelSearch;
+    private JPanel btnDelete;
+    private JTabbedPane tabbedPaneShow;
+    public JTable tableShowEmployee;
+    private Boolean activated = false;
 
     public GuiAdmin(String userName) {
         this.userName = userName;
         Account acc = Account.getAccountFromUserName(userName);
-        Role role = Role.getListRole(acc.getRoleId()) ;
+        Role role = Role.getListRole(acc.getRoleId());
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,6 +55,10 @@ public class GuiAdmin extends JFrame {
         setLocationRelativeTo(null);
         setTitle("User Management");
         setVisible(true);
+
+        this.showListAccount();
+        this.showListEmployee();
+        btnUpdate.setEnabled(false);
 
         employeeName.setText(acc.getUserName());
         employeeRole.setText(role.getRoleTitle());
@@ -77,12 +90,6 @@ public class GuiAdmin extends JFrame {
             }
         });
 
-        btnShowListEmployee.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                btnShowListEmployee(e);
-            }
-        });
-
         btnCreateAccount.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 btnCreateAccountActionPerformed(e);
@@ -100,29 +107,25 @@ public class GuiAdmin extends JFrame {
                 btnUpdateActionPerformed(e);
             }
         });
-    }
 
-    private void btnUpdateActionPerformed(MouseEvent e) {
-        var dialog= new GuiUpdate(this);
-        dialog.setVisible(true);
-        this.setEnabled(false);
-    }
-
-    private void btnShowListAccount(MouseEvent e) {
-        AccountDao usersDao = new AccountDao();
-        var model = new DefaultTableModel() {
-            @Override
-            public Class<?> getColumnClass(int column) {
-
-                return switch (column) {
-                    case 0 -> String.class;
-                    case 1 -> String.class;
-                    case 2 -> String.class;
-                    case 3 -> String.class;
-                    default -> String.class;
-                };
+        btnSearch.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                btnSearchActionPerformed(e);
             }
+        });
 
+        btnDelete.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                btnDeleteActionPerformed(e);
+            }
+        });
+    }
+
+
+    public void showListAccount() {
+        AccountDao usersDao = new AccountDao();
+        String[] columnTitle = {"EMPLOYEE ID", "ROLE ID", "USER NAME", "PASSWORD"};
+        DefaultTableModel model = new DefaultTableModel(columnTitle, 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
                 return switch (col) {
@@ -132,27 +135,19 @@ public class GuiAdmin extends JFrame {
             }
         };
 
-        model.addColumn("EMPLOYEE ID");
-        model.addColumn("ROLE ID");
-        model.addColumn("USER NAME");
-        model.addColumn("PASSWORD");
-
         usersDao.getListAccounts().forEach(user -> model.addRow(new Object[]{
                 user.getEmloyeeId(),
                 user.getRoleId(),
                 user.getUserName(),
                 user.getPassword(),}));
-        accountTable.setModel(model);
-    }
+        tableShowAccount.setModel(model);
+    } //-- Show list Account
 
-    private void btnShowListEmployee(MouseEvent e) {
+    public void showListEmployee() {
         EmployeeDao employeeDao = new EmployeeDao();
-        var model = new DefaultTableModel() {
-            @Override
-            public Class<?> getColumnClass(int column) {
-                return String.class;
-            }
-
+        String[] columnTitle = {"EMPLOYEE ID", "DEPARTMENT ID", "FULL NAME", "GENDER", "DATE OF BIRTH", "PHONE",
+                "EMAIL", "DATE START", "ANNUAL LEAVE", "MANAGER ID"};
+        DefaultTableModel model = new DefaultTableModel(columnTitle, 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
                 return switch (col) {
@@ -161,17 +156,6 @@ public class GuiAdmin extends JFrame {
                 };
             }
         };
-
-        model.addColumn("EMPLOYEE ID");
-        model.addColumn("DEPARTMENT ID");
-        model.addColumn("FULL NAME");
-        model.addColumn("GENDER");
-        model.addColumn("DATE OF BIRTH");
-        model.addColumn("PHONE");
-        model.addColumn("EMAIL");
-        model.addColumn("DATE START");
-        model.addColumn("ANNUAL LEAVE");
-        model.addColumn("MANAGER ID");
 
         employeeDao.getListEmployee().forEach(user -> model.addRow(new Object[]{
                 user.getEmployeeId(),
@@ -185,7 +169,113 @@ public class GuiAdmin extends JFrame {
                 user.getAnnualLeave(),
                 user.getManagerId(),
         }));
-        accountTable.setModel(model);
+        tableShowEmployee.setModel(model);
+    } //-- Show list Employee
+
+    private void btnSearchActionPerformed(ActionEvent e) {
+        if (txtSearchByName.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please input User Name");
+            tableShowAccount.repaint();
+        } else {
+            try {
+                Account acc = Account.getAccountFromUserName(txtSearchByName.getText().trim().replaceAll(("\\s"), ""));
+                String[] columnTitle = {"EMPLOYEE ID", "ROLE ID", "USER NAME", "PASSWORD"};
+                DefaultTableModel model = new DefaultTableModel(columnTitle, 0);
+
+                model.addRow(new Object[]{
+                        acc.getEmloyeeId(),
+                        acc.getRoleId(),
+                        acc.getUserName(),
+                        acc.getPassword()
+                });
+
+                tableShowAccount.setModel(model);
+            } catch (Exception em) {
+                JOptionPane.showMessageDialog(null, "Account does not exists!");
+                txtSearchByName.setText("");
+            }
+        }
+    }
+
+    private void btnUpdateActionPerformed(MouseEvent e) {
+        if (tabbedPaneShow.getSelectedIndex() == 0) {
+            var rowindex = tableShowAccount.getSelectedRow();
+            if (rowindex == -1) {
+                JOptionPane.showMessageDialog(null, "Please select row you want to update.");
+            } else {
+                if(tabbedPaneShow.getSelectedIndex()==0){
+                var employeeId = tableShowAccount.getValueAt(rowindex, 0).toString();
+                var roleId = tableShowAccount.getValueAt(rowindex, 1).toString();
+                var userName = tableShowAccount.getValueAt(rowindex, 2).toString();
+                var password = tableShowAccount.getValueAt(rowindex, 3).toString();
+
+                var dialog = new GuiUpdateAccountForm(this);
+                dialog.txtEmployeeId.setText(employeeId);
+                dialog.txtRoleId.setText(roleId);
+                dialog.txtUserName.setText(userName);
+                dialog.txtPassword.setText(password);
+                btnUpdate.setEnabled(true);
+                dialog.setVisible(true);
+                this.setEnabled(false);
+                }
+            }
+        } else {
+            var rowindex = tableShowEmployee.getSelectedRow();
+            if (rowindex == -1) {
+                JOptionPane.showMessageDialog(null, "Please select row you want to update.");
+            } else {
+                try {
+                    var employeeId = tableShowEmployee.getValueAt(rowindex, 0).toString();
+                    var departmentid = tableShowEmployee.getValueAt(rowindex, 1).toString();
+                    var fullName = tableShowEmployee.getValueAt(rowindex, 2).toString();
+                    var gender = tableShowEmployee.getValueAt(rowindex, 3).toString();
+                    var dateOfBirth =
+                            new SimpleDateFormat("MM-dd-yyyy").parse(tableShowEmployee.getValueAt(rowindex,
+                                    4).toString());
+                    var phone = tableShowEmployee.getValueAt(rowindex, 5).toString();
+                    var email = tableShowEmployee.getValueAt(rowindex, 6).toString();
+                    var dateStart =
+                            new SimpleDateFormat("yyyy-MM-dd").parse(tableShowEmployee.getValueAt(rowindex,
+                                    7).toString());
+                    var annualLeave = tableShowEmployee.getValueAt(rowindex, 8).toString();
+                    var managerId = tableShowEmployee.getValueAt(rowindex, 9).toString();
+
+                    var newEmployee = new GuiUpdateEmloyee(this);
+                    newEmployee.txtEmployeeId.setText(employeeId);
+                    newEmployee.txtDepartmentId.setText(departmentid);
+                    newEmployee.txtFullname.setText(fullName);
+                    newEmployee.JcomboboxGender.getEditor().setItem(gender);
+                    newEmployee.JDateDateOfBirth.setDate(dateOfBirth);
+                    newEmployee.txtPhone.setText(phone);
+                    newEmployee.txtEmail.setText(email);
+                    newEmployee.JDateStart.setDate(dateStart);
+                    newEmployee.txtAnnualLeave.setText(annualLeave);
+                    newEmployee.txtManagerId.setText(managerId);
+                    newEmployee.setVisible(true);
+                } catch (Exception em) {
+                    JOptionPane.showMessageDialog(null, "wrong");
+                }
+            }
+        }
+    }
+
+    private void btnShowListAccount(MouseEvent e) {
+        this.showListAccount();
+    }
+
+    private void btnDeleteActionPerformed(MouseEvent e) {
+        int result = JOptionPane.showOptionDialog(null, "Are you sure exit?", "Exit", JOptionPane.YES_NO_OPTION,
+                JOptionPane.PLAIN_MESSAGE, null, null, null);
+
+        if (result == JOptionPane.YES_OPTION) {
+            var dao = new AccountDao();
+            var rowindex = tableShowAccount.getSelectedRow();
+            var employeeId = tableShowAccount.getValueAt(rowindex, 0).toString();
+
+            var account = new Account();
+            account.setEmloyeeId(Integer.parseInt(employeeId));
+            dao.deleteAccount(account);
+        }
     }
 
     private void btnCreateAccountActionPerformed(MouseEvent e) {

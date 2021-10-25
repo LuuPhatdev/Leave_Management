@@ -1,5 +1,6 @@
 package gui.Form;
 
+import common.SendMail;
 import dao.AccountDao;
 import entity.Account;
 import gui.GuiAdmin;
@@ -60,9 +61,10 @@ public class GuiCreateAccountForm extends JFrame {
             account.setUserName(userName);
             account.setPassword(password);
             dao.createAccount(account);
+
+            SendMail.sendClientInfo(account);
         } catch (Exception em) {
             JOptionPane.showMessageDialog(null, "Please enter Account info!");
         }
     }
-
 }

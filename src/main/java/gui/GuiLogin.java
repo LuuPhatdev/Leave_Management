@@ -1,12 +1,15 @@
 package gui;
 
 import entity.Account;
-import entity.Employee;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class GuiLogin extends JFrame {
     private JTextField txtUseName;
@@ -40,6 +43,7 @@ public class GuiLogin extends JFrame {
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 450, 250);
+        setLocationRelativeTo(null);
         setTitle("LEAVE MANAGEMENT");
         setVisible(true);
 
@@ -64,7 +68,8 @@ public class GuiLogin extends JFrame {
                     JOptionPane.showMessageDialog(null, "Login Success");
                 } else if (user.getRoleId() == 2) {
                     dispose();
-                    var emp = new GuiEmployee(user.getEmloyeeId());
+//                    var emp = new GuiEmployee(user.getEmloyeeId());
+                    var fake = new FakeEmployee(user.getEmloyeeId(),userName);
                     JOptionPane.showMessageDialog(null, "Login Success");
                 } else if (user.getRoleId() == 3) {
                     dispose();

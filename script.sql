@@ -91,7 +91,7 @@ insert into time_off(employee_id, date_time_off, description_time_off, used, acc
 values (2, '2022-05-11', 'nghi gi do', 0, 0, 0)
 
 insert into leave_type(leave_type) values('Sick leave')
-insert into leave_type(leave_type) values('Casual leave')
+insert into leave_type(leave_type) values('Annual leave')
 insert into leave_type(leave_type) values('Public holiday')
 insert into leave_type(leave_type) values('Religious holidays')
 insert into leave_type(leave_type) values('Maternity leave')

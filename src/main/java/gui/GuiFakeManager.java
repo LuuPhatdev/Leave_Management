@@ -5,6 +5,7 @@ import com.toedter.calendar.JTextFieldDateEditor;
 import common.SendMail;
 import dao.*;
 import entity.*;
+import gui.GuiLogin;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -19,11 +20,12 @@ import java.beans.PropertyChangeListener;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
-public class FakeEmployee extends JFrame {
+public class GuiFakeManager extends JFrame {
 
     private final int employeeID;
     private final String userName;
@@ -40,8 +42,7 @@ public class FakeEmployee extends JFrame {
     private JTextField txtBirthdate;
     private JLabel lbLeaveType;
     private JComboBox cBLeaveType;
-    private JLabel btnRequest;
-    private JLabel btnHistory;
+    public JLabel btnHistory;
     private JLabel lbdateStart;
     private JDateChooser jDateStartChooser;
     private JDateChooser jDateEndChooser;
@@ -64,6 +65,10 @@ public class FakeEmployee extends JFrame {
     private JPanel btnLogOut;
     private JLabel employeeName;
     private JLabel employeeRole;
+    private JPanel p4;
+    private JLabel btnInbox;
+    private JTable tbRequestPending;
+    private JButton btnRequest;
     private EmployeeDao employeeDao = new EmployeeDao();
     private DepartmentDao departmentDao = new DepartmentDao();
     private AnnualLeaveDao annualLeaveDao = new AnnualLeaveDao();
@@ -72,8 +77,8 @@ public class FakeEmployee extends JFrame {
     private AccountDao accountDao = new AccountDao();
     private Role role = new Role();
 
-    public FakeEmployee(int empID,String userName) {
-        this.userName =userName;
+    public GuiFakeManager(int empID, String userName) {
+        this.userName = userName;
         this.employeeID = empID;
         var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
         var department = departmentDao.getDepartmentInfo(employee.getDepartmentId());
@@ -96,23 +101,27 @@ public class FakeEmployee extends JFrame {
         txtDepartment.setBorder(null);
         txtBirthdate.setBorder(null);
 
-        //Table Styling
+        //Table History Styling
         tbAnnualLeave.setRowHeight(30);
         tbAnnualLeave.setShowGrid(false);
         DefaultTableCellRenderer renderer =
                 (DefaultTableCellRenderer) tbAnnualLeave.getTableHeader().getDefaultRenderer();
         renderer.setHorizontalAlignment(JLabel.LEFT);
 
-        h1.setText("<html><div style=\"width:150px;text-align:left;border-bottom: 1px solid #e0e0e0;;overflow: " +
+        //Table Inbox Styling
+        tbRequestPending.setRowHeight(30);
+        tbRequestPending.setShowGrid(false);
+
+        h1.setText("<html><div style=\"width:150px;text-align:left;border-bottom: 1px solid #e0e0e0;overflow: " +
                 "hidden;\n" +
                 "    white-space: nowrap;\"></div></html>");
-        h2.setText("<html><div style=\"width:150px;text-align:left;border-bottom: 1px solid #e0e0e0;;overflow: " +
+        h2.setText("<html><div style=\"width:150px;text-align:left;border-bottom: 1px solid #e0e0e0;overflow: " +
                 "hidden;\n" +
                 "    white-space: nowrap;\"></div></html>");
-        h3.setText("<html><div style=\"width:150px;text-align:left;border-bottom: 1px solid #e0e0e0;;overflow: " +
+        h3.setText("<html><div style=\"width:150px;text-align:left;border-bottom: 1px solid #e0e0e0;overflow: " +
                 "hidden;\n" +
                 "    white-space: nowrap;\"></div></html>");
-        hrBasic.setText("<html><div style=\"width:150px;text-align:left;border-bottom: 1px solid #565656;;overflow: " +
+        hrBasic.setText("<html><div style=\"width:150px;text-align:left;border-bottom: 1px solid #565656;overflow: " +
                 "hidden;\n" +
                 "    white-space: nowrap;\"></div></html>");
 
@@ -123,11 +132,13 @@ public class FakeEmployee extends JFrame {
         filterHistory(allYears);
         this.showHistory();
 
+        //JDateChooser
         jDateStartChooser.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 jDateStartChooserPropertyChange(evt);
             }
         });
+
         jDateEndChooser.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 jDateEndChooserPropertyChange(evt);
@@ -140,6 +151,54 @@ public class FakeEmployee extends JFrame {
             }
         });
 
+        //Show Inbox Request
+        var centerRenderer = new DefaultTableCellRenderer();
+        var count = 0;
+        String[] collumnNames1 = {"Request ID", "Employee Name", "Employee ID", "Leave Type", "Date Start", "Date " +
+                "End", "Amount (days)", "Request Description"};
+        var tableModel1 = new DefaultTableModel(collumnNames1, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return switch (col) {
+                    case 0, 1, 2, 3, 4, 5, 6 -> false;
+                    default -> true;
+                };
+            }
+        };
+        var requestPendingList =
+                rLeaveDao.getListRequestLeaveByEmail(employee.getEmail()).stream().filter(rl -> rl.getRequestStatus().equals("pending")).collect(Collectors.toList());
+        count = 0;
+
+        while (requestPendingList.size() > count) {
+            var requestIDPending = requestPendingList.get(count).getRequestID();
+            var employeeNamePending =
+                    employeeDao.getEmployeeByEmployeeId(requestPendingList.get(count).getEmployeeID()).getFullName();
+            var employeeIDPending = requestPendingList.get(count).getEmployeeID();
+            var leaveTypePending =
+                    lTypeDao.getLeaveTypeInfoByID(requestPendingList.get(count).getLeaveID()).getLeaveType();
+            var dateStartPending = requestPendingList.get(count).getDateStart();
+            var dateEndPending = requestPendingList.get(count).getDateEnd();
+            var amountPending = requestPendingList.get(count).getAmount();
+            var requestDescriptionPending = requestPendingList.get(count).getRequestDescription();
+            Object[] data1 = {requestIDPending, employeeNamePending, employeeIDPending, leaveTypePending,
+                    dateStartPending, dateEndPending, amountPending, requestDescriptionPending};
+            tableModel1.addRow(data1);
+            count++;
+        }
+        tbRequestPending.setModel(tableModel1);
+
+        count = 0;
+        while (count < tbRequestPending.getColumnCount()) {
+            tbRequestPending.getColumnModel().getColumn(count).setCellRenderer(centerRenderer);
+            count++;
+        }
+
+        tbRequestPending.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                TableRequestPendingMouseListener(e, tableModel1);
+            }
+        });
+
         //Send Request
         btnSendRequest.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -149,9 +208,9 @@ public class FakeEmployee extends JFrame {
 
         //Send Request Tag
         btnRequest.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnRequest.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                btnRequestActionPerformed(e);
+        btnRequest.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               btnRequestActionPerformed(e);
             }
         });
 
@@ -171,6 +230,15 @@ public class FakeEmployee extends JFrame {
             }
         });
 
+        //History Tag
+        btnInbox.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnInbox.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                btnInboxActionPerformed(e);
+            }
+        });
+
+        //Log Out
         btnLogOut.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnLogOut.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -178,6 +246,8 @@ public class FakeEmployee extends JFrame {
             }
         });
     }
+
+
 
     private void showHistory() {
         int count;
@@ -208,6 +278,17 @@ public class FakeEmployee extends JFrame {
         tbAnnualLeave.setModel(tableModel);
     }
 
+    private void filterHistory(List<Integer> allYears) {
+        var centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        var count = 0;
+        cbGroupByYear.addItem("...");
+        while (allYears.size() > count) {
+            cbGroupByYear.addItem(allYears.get(count));
+            count++;
+        }
+    }
+
     private void showEmployeeInfo(Employee employee, Department department) {
         lbPhoneNumber.setText(String.valueOf(employee.getPhone()));
         lbEmail.setText(employee.getEmail());
@@ -232,17 +313,6 @@ public class FakeEmployee extends JFrame {
             default -> txtGender.setText("error");
         }
         txtBirthdate.setText(employee.getDateOfBirth().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-    }
-
-    private void filterHistory(List<Integer> allYears) {
-        var centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        var count = 0;
-        cbGroupByYear.addItem("...");
-        while (allYears.size() > count) {
-            cbGroupByYear.addItem(allYears.get(count));
-            count++;
-        }
     }
 
     private void cbGroupByYearActionPerformed(ActionEvent e) {
@@ -289,22 +359,44 @@ public class FakeEmployee extends JFrame {
         tbAnnualLeave.repaint();
     }
 
+    private void TableRequestPendingMouseListener(MouseEvent e, DefaultTableModel tableModel) {
+        if (SwingUtilities.isRightMouseButton(e)) {
+            if (tbRequestPending.getSelectedRow() == -1) {
+                JOptionPane.showMessageDialog(null, "Please select row first.");
+            } else {
+                var reqChecking = new GuiRequestChecking(this, tbRequestPending, tableModel);
+            }
+        }
+    }
+
+    //Switch Tag
     private void btnPersonalActionPerformed(MouseEvent e) {
         p1.setVisible(true);
         p2.setVisible(false);
         p3.setVisible(false);
+        p4.setVisible(false);
+
     }
 
-    private void btnRequestActionPerformed(MouseEvent e) {
+    private void btnRequestActionPerformed(ActionEvent e) {
         p1.setVisible(false);
         p2.setVisible(true);
         p3.setVisible(false);
+        p4.setVisible(false);
     }
 
     private void btnHistoryActionPerformed(MouseEvent e) {
         p1.setVisible(false);
         p2.setVisible(false);
         p3.setVisible(true);
+        p4.setVisible(false);
+    }
+
+    private void btnInboxActionPerformed(MouseEvent e) {
+        p1.setVisible(false);
+        p2.setVisible(false);
+        p3.setVisible(false);
+        p4.setVisible(true);
     }
 
     private void btnSendRequestActionPerformed(ActionEvent e) {
@@ -383,6 +475,7 @@ public class FakeEmployee extends JFrame {
         }
     }
 
+    //Edit JDatechooser
     private void jDateEndChooserPropertyChange(PropertyChangeEvent evt) {
         jDateStartChooser.getJCalendar().setMaxSelectableDate(jDateEndChooser.getDate());
     }

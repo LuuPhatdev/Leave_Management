@@ -56,6 +56,40 @@ public class EmployeeDao {
         return employees.get(0);
     }
 
+    public boolean checkIfExistsEmployeeByID(int employeeID) {
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from employee where employee_id = ?");) {
+            cs.setInt(1, employeeID);
+            var rs = cs.executeQuery();
+            if( rs.next() ){
+                return true;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return false;
+    }
+
+    public int checkIfExistsEmployeeEmailOrPhone(String email, String phone){
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from employee where email = ? or phone = ?");) {
+            cs.setString(1, email);
+            cs.setString(2, phone);
+            var rs = cs.executeQuery();
+            while(rs.next()){
+                if(rs.getString("email").equals(email)){
+                    return 1;
+                }
+                if(rs.getString("phone").equals(phone)){
+                    return 2;
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return 0;
+    }
+
     public void crudEmployee(Employee employee) {
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();
              var cs = connect.prepareCall("{call insertEmployee(?,?,?,?,?,?,?,?,?)}");

@@ -98,4 +98,34 @@ public class AccountDao {
         }
         return adminID;
     }
+
+    public boolean checkIfExistsAccountByEmployeeID(int employeeID){
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from account where employee_id = ?");
+        ) {
+            cs.setInt(1, employeeID);
+            var rs = cs.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return false;
+    }
+
+    public boolean checkIfExistsAccountByUserName(String userName){
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from account where username = ?");
+        ) {
+            cs.setString(1, userName);
+            var rs = cs.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return false;
+    }
 }

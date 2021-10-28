@@ -58,7 +58,6 @@ public class GuiRequestChecking extends JFrame {
     }
 
     private void BtnAcceptActionPerformed(ActionEvent e) {
-
         var annualLeave = new AnnualLeave();
         var employee =
                 employeeDao.getEmployeeByEmployeeId(Integer.parseInt(table.getModel().getValueAt(table.getSelectedRow(), 2).toString()));

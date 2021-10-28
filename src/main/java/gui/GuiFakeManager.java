@@ -69,6 +69,8 @@ public class GuiFakeManager extends JFrame {
     private JLabel btnInbox;
     private JTable tbRequestPending;
     private JButton btnRequest;
+    private JLabel btnChecking;
+    private JPanel p5;
     private EmployeeDao employeeDao = new EmployeeDao();
     private DepartmentDao departmentDao = new DepartmentDao();
     private AnnualLeaveDao annualLeaveDao = new AnnualLeaveDao();
@@ -210,7 +212,7 @@ public class GuiFakeManager extends JFrame {
         btnRequest.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnRequest.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               btnRequestActionPerformed(e);
+                btnRequestActionPerformed(e);
             }
         });
 
@@ -230,6 +232,13 @@ public class GuiFakeManager extends JFrame {
             }
         });
 
+//        Checking Tag
+        btnChecking.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                btnCheckingActionPerformed(e);
+            }
+        });
+
         //History Tag
         btnInbox.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnInbox.addMouseListener(new MouseAdapter() {
@@ -246,8 +255,6 @@ public class GuiFakeManager extends JFrame {
             }
         });
     }
-
-
 
     private void showHistory() {
         int count;
@@ -375,7 +382,7 @@ public class GuiFakeManager extends JFrame {
         p2.setVisible(false);
         p3.setVisible(false);
         p4.setVisible(false);
-
+        p5.setVisible(false);
     }
 
     private void btnRequestActionPerformed(ActionEvent e) {
@@ -383,6 +390,7 @@ public class GuiFakeManager extends JFrame {
         p2.setVisible(true);
         p3.setVisible(false);
         p4.setVisible(false);
+        p5.setVisible(false);
     }
 
     private void btnHistoryActionPerformed(MouseEvent e) {
@@ -390,13 +398,23 @@ public class GuiFakeManager extends JFrame {
         p2.setVisible(false);
         p3.setVisible(true);
         p4.setVisible(false);
+        p5.setVisible(false);
+    }
+
+    private void btnCheckingActionPerformed(MouseEvent e) {
+        p1.setVisible(false);
+        p2.setVisible(false);
+        p3.setVisible(false);
+        p4.setVisible(true);
+        p5.setVisible(false);
     }
 
     private void btnInboxActionPerformed(MouseEvent e) {
         p1.setVisible(false);
         p2.setVisible(false);
         p3.setVisible(false);
-        p4.setVisible(true);
+        p4.setVisible(false);
+        p5.setVisible(true);
     }
 
     private void btnSendRequestActionPerformed(ActionEvent e) {

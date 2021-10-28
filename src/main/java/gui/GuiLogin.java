@@ -19,6 +19,7 @@ public class GuiLogin extends JFrame {
     private JLabel lbUserNameError;
     private JLabel lbPasswordError;
     private JPanel loginBody;
+    private JPanel loginPane;
 
     /**
      * Launch
@@ -43,11 +44,18 @@ public class GuiLogin extends JFrame {
 //        contentPane = new JPanel();
 //        Enable this line above if get trouble with "Content pane cannot be set to null"
 //        Sometimes app doesn't paint the UI, please Click "Recompile" or Crt+Shift+F9  to rebuild entire the source
+
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 450, 250);
+        loginPane.setBounds(100, 100, 450, 250);
+        setLocationRelativeTo(null);
         setTitle("LEAVE MANAGEMENT");
         setVisible(true);
+
+        //Edit Jtextfield
+        txtUseName.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        txtPassword.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -150,11 +158,13 @@ public class GuiLogin extends JFrame {
                     JOptionPane.showMessageDialog(null, "Login Success");
                 } else if (user.getRoleId() == 2) {
                     dispose();
-                    var emp = new GuiEmployee(user.getEmloyeeId());
+//                    var emp = new GuiEmployee(user.getEmloyeeId());
+                    var fakeEmployee = new GuiFakeEmployee(user.getEmloyeeId(),userName);
                     JOptionPane.showMessageDialog(null, "Login Success");
                 } else if (user.getRoleId() == 3) {
                     dispose();
-                    var manager = new GuiManager(user.getEmloyeeId());
+//                    var fakeManagement = new GuiManager(user.getEmloyeeId());
+                    var fakeEmployee = new GuiFakeManager(user.getEmloyeeId(), userName);
                     JOptionPane.showMessageDialog(null, "Login Success");
                 } else {
                     JOptionPane.showMessageDialog(null, "Wrong username or password");
@@ -162,6 +172,6 @@ public class GuiLogin extends JFrame {
             }
         }
     }
-
-
 }
+
+

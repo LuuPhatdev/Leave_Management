@@ -105,11 +105,7 @@ public class GuiEmployee extends JFrame {
             default -> tfGender.setText("error");
         }
         tfBirthday.setText(employee.getDateOfBirth().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        btnSendRequest.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                btnSendRequestActionPerformed(e);
-            }
-        });
+
 
 //        sendRequest
         jDateStartChooser.addPropertyChangeListener(new PropertyChangeListener() {

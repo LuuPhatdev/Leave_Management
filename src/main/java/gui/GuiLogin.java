@@ -16,10 +16,12 @@ public class GuiLogin extends JFrame {
     private JPasswordField txtPassword;
     private JButton btnLogin;
     private JPanel contentPane;
+
     private JLabel lbUserNameError;
     private JLabel lbPasswordError;
     private JPanel loginBody;
     private JPanel loginPane;
+
 
     /**
      * Launch
@@ -92,9 +94,9 @@ public class GuiLogin extends JFrame {
             }
         });
 
-        loginBody.addMouseListener(new MouseAdapter() {
+        loginPane.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                loginBody.requestFocus();
+                loginPane.requestFocus();
             }
         });
     }
@@ -173,5 +175,3 @@ public class GuiLogin extends JFrame {
         }
     }
 }
-
-

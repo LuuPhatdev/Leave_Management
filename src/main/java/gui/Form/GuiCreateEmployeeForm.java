@@ -64,7 +64,7 @@ public class GuiCreateEmployeeForm extends JFrame {
         var phone = txtPhone.getText();
         var email = txtEmail.getText();
         var dateStart = JDateStart.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        var annualLeave = 0;
+        var annualLeave = 14;
         var managerId = Integer.parseInt(txtManagerId.getText());
 
         switch (gender) {

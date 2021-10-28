@@ -11,10 +11,7 @@ import entity.RequestLeave;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.DayOfWeek;
@@ -60,6 +57,8 @@ public class GuiManager extends JFrame {
     private JPanel requestChecking;
     private JTable tbRequestPending;
     private JButton btnLogOut;
+    private JLabel lbLeaveDurationError;
+    private JLabel lbDescriptionError;
     private EmployeeDao employeeDao = new EmployeeDao();
     private DepartmentDao departmentDao = new DepartmentDao();
     private AnnualLeaveDao annualLeaveDao = new AnnualLeaveDao();
@@ -221,6 +220,21 @@ public class GuiManager extends JFrame {
                 BtnLogOutActionPerformed(e);
             }
         });
+
+        //        switch focus
+
+        requestLeave.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                requestLeave.requestFocus();
+            }
+        });
+
+        txtARequestDescription.addFocusListener(new FocusAdapter() {
+            public void focusLost(FocusEvent e) {
+                TxtARequestDescriptionFocusLost(e);
+            }
+        });
     }
 
     //    log out action listener(s)
@@ -231,15 +245,6 @@ public class GuiManager extends JFrame {
     }
 
 //    request action listener(s)
-
-    private void jDateEndChooserPropertyChange(PropertyChangeEvent evt) {
-        jDateStartChooser.getJCalendar().setMaxSelectableDate(jDateEndChooser.getDate());
-    }
-
-    private void jDateStartChooserPropertyChange(PropertyChangeEvent evt) {
-        jDateEndChooser.setEnabled(true);
-        jDateEndChooser.getJCalendar().setMinSelectableDate(jDateStartChooser.getDate());
-    }
 
     private void btnSendRequestActionPerformed(ActionEvent e) {
 
@@ -376,6 +381,77 @@ public class GuiManager extends JFrame {
                 var reqChecking = new GuiRequestChecking(this, tbRequestPending, tableModel);
             }
         }
+    }
+
+    //    error warning action listener(s)
+
+    private void jDateEndChooserPropertyChange(PropertyChangeEvent evt) {
+        jDateStartChooser.getJCalendar().setMaxSelectableDate(jDateEndChooser.getDate());
+        var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
+
+        if(jDateStartChooser.getDate() != null && jDateEndChooser.getDate() != null){
+            var amount = 0;
+            if (jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate()) != 0) {
+                if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
+                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
+                    amount = 1;
+                }
+                Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+                long diffDate =
+                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
+                                        jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
+                                .filter(d -> !weekend.contains(d.getDayOfWeek()))
+                                .count();
+                amount += Math.toIntExact(diffDate);
+            }
+
+            if ((double) amount <= employee.getAnnualLeave()) {
+                lbLeaveDurationError.setText("");
+            } else {
+                lbLeaveDurationError.setText("exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
+            }
+        }
+    }
+
+    private void jDateStartChooserPropertyChange(PropertyChangeEvent evt) {
+        jDateEndChooser.setEnabled(true);
+        jDateEndChooser.getJCalendar().setMinSelectableDate(jDateStartChooser.getDate());
+        var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
+
+        if(jDateEndChooser.getDate() != null){
+            var amount = 0;
+            if (jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate()) != 0) {
+                if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
+                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
+                    amount = 1;
+                }
+                Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+                long diffDate =
+                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
+                                        jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
+                                .filter(d -> !weekend.contains(d.getDayOfWeek()))
+                                .count();
+                amount += Math.toIntExact(diffDate);
+            }
+
+            if ((double) amount <= employee.getAnnualLeave()) {
+                lbLeaveDurationError.setText("");
+            } else {
+                lbLeaveDurationError.setText("exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
+            }
+        }
+    }
+
+    private void TxtARequestDescriptionFocusLost(FocusEvent e) {
+        if (txtARequestDescription.getText().trim().length() == 0 ||
+                txtARequestDescription.getText() == null) {
+            lbDescriptionError.setText("Please do not leave this description empty.");
+        } else if (txtARequestDescription.getText().trim().length() > 200) {
+            lbDescriptionError.setText("maximum 200 letters is allowed in description.");
+        }else {
+            lbDescriptionError.setText("");
+        }
+
     }
 
     //    custom ui compoments

@@ -1,14 +1,18 @@
 package gui.Form;
 
 import dao.AccountDao;
+import dao.EmployeeDao;
 import entity.Account;
 import gui.GuiAdmin;
+import helper.RegexConst;
+import helper.Validation;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.stream.IntStream;
 
 public class GuiCreateAccountForm extends JFrame {
 
@@ -22,6 +26,7 @@ public class GuiCreateAccountForm extends JFrame {
     private JTextField txtRole;
     private JLabel errRole;
     private JTextField txtEmployeeId;
+    private JLabel errEmployeeID;
 
     public GuiCreateAccountForm(GuiAdmin guiAdmin) {
         this.guiAdmin = guiAdmin;
@@ -36,6 +41,7 @@ public class GuiCreateAccountForm extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 guiAdmin.setEnabled(true);
+                guiAdmin.showListAccount();
             }
         });
 
@@ -47,18 +53,66 @@ public class GuiCreateAccountForm extends JFrame {
     }
 
     private void btnCreateActionPerformed(ActionEvent e) {
-        var dao = new AccountDao();
-        var employeeId = txtEmployeeId.getText();
-        var userName = txtUserName.getText();
-        var password = txtPassword.getText();
-        var role = txtRole.getText();
+        var check = 1;
+        while (check > 0){
+            var dao = new AccountDao();
+            var employeeDao = new EmployeeDao();
 
-        var account = new Account();
-        account.setEmloyeeId(Integer.parseInt(employeeId));
-        account.setRoleId(Integer.parseInt(role));
-        account.setUserName(userName);
-        account.setPassword(password);
-        dao.createAccount(account);
+            var employeeId = "";
+            if(Validation.checkInput(txtEmployeeId.getText(), RegexConst.INTERGER) && !txtEmployeeId.getText().trim().isEmpty()){
+                if(employeeDao.checkIfExistsEmployeeByID(Integer.parseInt(txtEmployeeId.getText().trim()))){
+                    if(dao.checkIfExistsAccountByEmployeeID( Integer.parseInt( txtEmployeeId.getText().trim() ) ) ){
+                        JOptionPane.showMessageDialog(null, "This Employee already have an account.");
+                        break;
+                    }else{
+                        employeeId = txtEmployeeId.getText();
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(null, "This Employee id is not exists.");
+                    break;
+                }
+
+            }else{
+                JOptionPane.showMessageDialog(null, "Employee ID must be filled and only in numbers.");
+                break;
+            }
+            var userName = "";
+            if(Validation.checkInput(txtUserName.getText(), RegexConst.USER, 5, 15) && !txtUserName.getText().trim().isEmpty()){
+                if(dao.checkIfExistsAccountByUserName(txtUserName.getText().trim())){
+                    JOptionPane.showMessageDialog(null, "Username is already exists.");
+                    break;
+                }else{
+                    userName = txtUserName.getText();
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Username must not have special letters and must be filled.");
+                break;
+            }
+            var password = txtPassword.getText();
+            var role = "";
+            var roleList = new int[] {1, 2, 3};
+            if(Validation.checkInput(txtRole.getText(), RegexConst.INTERGER) && !txtRole.getText().trim().isEmpty()){
+                boolean contains = IntStream.of(roleList).anyMatch(x -> x == Integer.parseInt(txtRole.getText().trim()));
+                if(contains){
+                    role = txtRole.getText().trim();
+                }else{
+                    JOptionPane.showMessageDialog(null, "role id not exists.");
+                    break;
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "role id must be filled and only in numbers.");
+                break;
+            }
+
+            var account = new Account();
+            account.setEmloyeeId(Integer.parseInt(employeeId));
+            account.setRoleId(Integer.parseInt(role));
+            account.setUserName(userName);
+            account.setPassword(password);
+            dao.createAccount(account);
+
+            check--;
+        }
     }
 
 }

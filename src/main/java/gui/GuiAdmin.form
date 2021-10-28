@@ -137,7 +137,6 @@
                 <properties>
                   <font name="Roboto" size="14" style="0"/>
                   <foreground color="-2697514"/>
-                  <icon value="images/signout.png"/>
                   <text value="Log Out"/>
                 </properties>
               </component>

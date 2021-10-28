@@ -27,4 +27,18 @@ public class DepartmentDao {
         }
         return departments.get(0);
     }
+
+    public boolean checkIfExistDepartmentByID(int departmentID){
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from department where dep_id = ?");) {
+            cs.setInt(1, departmentID);
+            var rs = cs.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return false;
+    }
 }

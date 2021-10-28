@@ -42,6 +42,7 @@ public class GuiAdmin extends JFrame {
     private JPanel btnDelete;
     private JTabbedPane tabbedPaneShow;
     public JTable tableShowEmployee;
+    private Boolean activated = false;
 
     public GuiAdmin(String userName) {
         this.userName = userName;

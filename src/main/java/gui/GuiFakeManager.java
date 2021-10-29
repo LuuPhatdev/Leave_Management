@@ -208,39 +208,38 @@ public class GuiFakeManager extends JFrame {
             }
         });
 
-        //Send Request Tag
+        //Hover Cursor Pointer
         btnRequest.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnInbox.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnPersonal.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnHistory.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        //Switch Tag
         btnRequest.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 btnRequestActionPerformed(e);
             }
         });
 
-        //Personal Tag
-        btnPersonal.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnPersonal.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 btnPersonalActionPerformed(e);
             }
         });
 
-        //History Tag
-        btnHistory.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         btnHistory.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 btnHistoryActionPerformed(e);
             }
         });
 
-//        Checking Tag
         btnChecking.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 btnCheckingActionPerformed(e);
             }
         });
 
-        //History Tag
-        btnInbox.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnInbox.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 btnInboxActionPerformed(e);

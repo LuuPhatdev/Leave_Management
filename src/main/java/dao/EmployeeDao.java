@@ -61,7 +61,7 @@ public class EmployeeDao {
              var cs = connect.prepareStatement("select * from employee where employee_id = ?");) {
             cs.setInt(1, employeeID);
             var rs = cs.executeQuery();
-            if( rs.next() ){
+            if (rs.next()) {
                 return true;
             }
         } catch (Exception ex) {
@@ -70,17 +70,17 @@ public class EmployeeDao {
         return false;
     }
 
-    public int checkIfExistsEmployeeEmailOrPhone(String email, String phone){
+    public int checkIfExistsEmployeeEmailOrPhone(String email, String phone) {
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();
              var cs = connect.prepareStatement("select * from employee where email = ? or phone = ?");) {
             cs.setString(1, email);
             cs.setString(2, phone);
             var rs = cs.executeQuery();
-            while(rs.next()){
-                if(rs.getString("email").equals(email)){
+            while (rs.next()) {
+                if (rs.getString("email").equals(email)) {
                     return 1;
                 }
-                if(rs.getString("phone").equals(phone)){
+                if (rs.getString("phone").equals(phone)) {
                     return 2;
                 }
             }

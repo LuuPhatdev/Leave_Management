@@ -43,6 +43,7 @@ public class GuiLogin extends JFrame {
     }
 
     public GuiLogin() {
+
 //        contentPane = new JPanel();
 //        Enable this line above if get trouble with "Content pane cannot be set to null"
 //        Sometimes app doesn't paint the UI, please Click "Recompile" or Crt+Shift+F9  to rebuild entire the source

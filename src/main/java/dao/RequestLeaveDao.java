@@ -36,31 +36,6 @@ public class RequestLeaveDao {
         return listRequest;
     }
 
-    public List<RequestLeave> getListRequestLeaveByEmployeeID(int employeeID){
-        List<RequestLeave> listRequest = new ArrayList<>();
-        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
-             var cs = connect.prepareStatement("select * from request where employee_id = ? order by date_start DESC");) {
-            cs.setInt(1, employeeID);
-            var rs = cs.executeQuery();
-            while(rs.next()){
-                var requestForm = new RequestLeave();
-                requestForm.setRequestID(rs.getInt("request_id"));
-                requestForm.setEmployeeID(rs.getInt("employee_id"));
-                requestForm.setLeaveID(rs.getInt("leave_id"));
-                requestForm.setDateStart(rs.getDate("date_start").toLocalDate());
-                requestForm.setDateEnd(rs.getDate("date_end").toLocalDate());
-                requestForm.setRequestStatus(rs.getString("request_status"));
-                requestForm.setRequestTo(rs.getString("request_status"));
-                requestForm.setRequestDescription(rs.getString("request_description"));
-                requestForm.setAmount(rs.getInt("amount"));
-                listRequest.add(requestForm);
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        }
-        return listRequest;
-    }
-
     public List<RequestLeave> getListRequestLeaveByEmail(String email){
         List<RequestLeave> listRequest = new ArrayList<>();
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();

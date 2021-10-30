@@ -1,15 +1,13 @@
 package gui;
 
 import entity.Account;
-import entity.Employee;
 import helper.RegexConst;
 import helper.Validation;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+
 
 public class GuiLogin extends JFrame {
     private JTextField txtUseName;
@@ -19,7 +17,6 @@ public class GuiLogin extends JFrame {
 
     private JLabel lbUserNameError;
     private JLabel lbPasswordError;
-    private JPanel loginBody;
     private JPanel loginPane;
 
 
@@ -143,7 +140,6 @@ public class GuiLogin extends JFrame {
     }
 
 //    login actionlistener(s)
-
     private void btnLoginActionPerformed(ActionEvent e) {
         String userName = txtUseName.getText().trim();
         String password = String.valueOf(txtPassword.getPassword()).trim();

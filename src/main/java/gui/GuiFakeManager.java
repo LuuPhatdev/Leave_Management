@@ -11,11 +11,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -69,7 +71,6 @@ public class GuiFakeManager extends JFrame {
     private JButton btnRequest;
     private JLabel btnChecking;
     private JPanel p5;
-    private JTable tbInbox;
     private EmployeeDao employeeDao = new EmployeeDao();
     private DepartmentDao departmentDao = new DepartmentDao();
     private AnnualLeaveDao annualLeaveDao = new AnnualLeaveDao();
@@ -81,15 +82,18 @@ public class GuiFakeManager extends JFrame {
     public GuiFakeManager(int empID, String userName) {
         this.userName = userName;
         this.employeeID = empID;
+
         var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
         var department = departmentDao.getDepartmentInfo(employee.getDepartmentId());
-        Account acc = Account.getAccountFromUserName(userName);
         var allYears = annualLeaveDao.groupByYear();
+
+        Account acc = Account.getAccountFromUserName(userName);
         var role = Role.getListRole(acc.getRoleId());
 
         employeeName.setText(employee.getFullName());
         employeeRole.setText(role.getRoleTitle());
 
+        //Innit
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(200, 200, 700, 480);
@@ -101,15 +105,6 @@ public class GuiFakeManager extends JFrame {
         txtGender.setBorder(null);
         txtDepartment.setBorder(null);
         txtBirthdate.setBorder(null);
-
-        tbAnnualLeave.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tbInbox.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tbRequestPending.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        if(employee.getAnnualLeave() == 0){
-            cBLeaveType.remove(0);
-            cBLeaveType.remove(1);
-        }
 
         //Table History Styling
         tbAnnualLeave.setRowHeight(30);
@@ -261,70 +256,6 @@ public class GuiFakeManager extends JFrame {
                 btnLogOutActionPerformed(e);
             }
         });
-
-//        inbox tag
-        var tableModel2 = this.showInbox();
-
-        tbInbox.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                TbInboxMouseClicked(e, tableModel2);
-            }
-        });
-
-        cBLeaveType.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                if(employee.getAnnualLeave() == 0){
-                    if(cBLeaveType.getSelectedItem().equals("Annual leave") || cBLeaveType.getSelectedItem().equals("Sick leave")){
-                        JOptionPane.showMessageDialog(null, "can not choose this when annual leave is 0.");
-                        cBLeaveType.setSelectedIndex(0);
-                    }
-                }
-            }
-        });
-    }
-
-    private void TbInboxMouseClicked(MouseEvent e, DefaultTableModel tableModel2) {
-        if (SwingUtilities.isRightMouseButton(e)) {
-            if (tbInbox.getSelectedRow() == -1) {
-                JOptionPane.showMessageDialog(null, "Please select row first.");
-            } else {
-                var status = tbInbox.getModel().getValueAt(tbInbox.getSelectedRow(), 0).toString();
-                if(status.equals("cancelled")){
-                    JOptionPane.showMessageDialog(null, "Can not cancel a cancelled request.");
-                } else if (status.equals("denied")){
-                    JOptionPane.showMessageDialog(null, "Can not cancel a denied request.");
-                } else if (LocalDate.now().compareTo(
-                        LocalDate.parse( tbInbox.getModel().getValueAt(tbInbox.getSelectedRow(), 2).toString() ) ) >= 0){
-                    JOptionPane.showMessageDialog(null, "Can not cancel an accepted request already in effect.");
-                } else{
-                    var cancelling = new GuiCancellingRequest(this, tbInbox, tableModel2);
-                }
-            }
-        }
-    }
-
-    private DefaultTableModel showInbox(){
-        String[] collumnNames ={"Status","Request ID", "From", "To", "Leave Type", "Description"};
-        var tableModel = new DefaultTableModel(collumnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return switch (col) {
-                    case 0, 1, 2, 3, 4, 5 -> false;
-                    default -> true;
-                };
-            }
-        };
-        var listRequestLeaveOfEmployeeID = rLeaveDao.getListRequestLeaveByEmployeeID(employeeID);
-        listRequestLeaveOfEmployeeID.forEach(emp -> tableModel.addRow( new Object[]{
-                emp.getRequestStatus(),
-                emp.getRequestID(),
-                emp.getDateStart(),
-                emp.getDateEnd(),
-                lTypeDao.getLeaveTypeInfoByID(emp.getLeaveID()).getLeaveType(),
-                emp.getRequestDescription()
-        }));
-        tbInbox.setModel(tableModel);
-        return tableModel;
     }
 
     private void showHistory() {
@@ -490,20 +421,16 @@ public class GuiFakeManager extends JFrame {
 
     private void btnSendRequestActionPerformed(ActionEvent e) {
 
-        var recentlyAcceptedRequest = rLeaveDao.getRecentlyAcceptedRequestFromEmployeeID(employeeID);
-
         if (rLeaveDao.pendingCheckingByEmployeeID(employeeID)) {
 
             JOptionPane.showMessageDialog(null, "you already sent a request, please wait still your request is " +
                     "checked.");
 
-        } else if(recentlyAcceptedRequest.getDateEnd() == null || LocalDate.now().compareTo( recentlyAcceptedRequest.getDateEnd() ) >= 0) {
-
+        } else {
             var lType = new LeaveType();
             lType = lTypeDao.getLeaveTypeInfoByName(cBLeaveType.getSelectedItem().toString());
             var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
             var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
-            var admin = employeeDao.getEmployeeByEmployeeId(accountDao.getAdminID());
             var managerForSpecialLeaveTypes = employeeDao.getEmployeeByEmployeeId(departmentDao.getDepartmentChiefID(1));
             var requestForm = new RequestLeave();
             var check = 1;
@@ -523,11 +450,7 @@ public class GuiFakeManager extends JFrame {
                 if (lType.getLeaveID() == 1 || lType.getLeaveID() == 2) {
                     requestForm.setRequestTo(manager.getEmail());
                 } else {
-                    if(departmentDao.getDepartmentChiefID(1) != employeeID){
-                        requestForm.setRequestTo(managerForSpecialLeaveTypes.getEmail());
-                    }else{
-                        requestForm.setRequestTo(admin.getEmail());
-                    }
+                    requestForm.setRequestTo(managerForSpecialLeaveTypes.getEmail());
                 }
 
                 var amount = 0;
@@ -539,7 +462,7 @@ public class GuiFakeManager extends JFrame {
                     Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
                     long diffDate =
                             jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
-                                            jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
+                                    jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
                                     .filter(d -> !weekend.contains(d.getDayOfWeek()))
                                     .count();
                     amount += Math.toIntExact(diffDate);
@@ -566,12 +489,9 @@ public class GuiFakeManager extends JFrame {
 
                 requestForm.setRequestDescription(txtARequestDescription.getText().trim());
                 rLeaveDao.insertRequestLeave(requestForm);
-                this.showInbox();
                 SendMail.sendMailForRequestLeave(requestForm);
                 check = 0;
             }
-        }else{
-            JOptionPane.showMessageDialog(null,"your recently accepted request still not over.");
         }
     }
 

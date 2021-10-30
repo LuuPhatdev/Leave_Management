@@ -42,7 +42,7 @@ public class GuiCreateEmployeeForm extends JFrame {
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 550, 250);
+        setBounds(100, 100, 550, 300);
         setLocationRelativeTo(null);
         setTitle("Create Employee");
 

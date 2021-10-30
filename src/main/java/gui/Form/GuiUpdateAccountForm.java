@@ -26,7 +26,7 @@ public class GuiUpdateAccountForm extends JFrame {
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 300, 300);
+        setBounds(100, 100, 300, 200);
         setLocationRelativeTo(null);
         setTitle("Update Account");
 

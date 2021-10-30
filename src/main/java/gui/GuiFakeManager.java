@@ -11,10 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.DayOfWeek;
@@ -271,6 +268,17 @@ public class GuiFakeManager extends JFrame {
         tbInbox.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 TbInboxMouseClicked(e, tableModel2);
+            }
+        });
+
+        cBLeaveType.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if(employee.getAnnualLeave() == 0){
+                    if(cBLeaveType.getSelectedItem().equals("Annual leave") || cBLeaveType.getSelectedItem().equals("Sick leave")){
+                        JOptionPane.showMessageDialog(null, "can not choose this when annual leave is 0.");
+                        cBLeaveType.setSelectedIndex(0);
+                    }
+                }
             }
         });
     }

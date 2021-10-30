@@ -3,7 +3,7 @@ package gui.Form;
 import dao.AccountDao;
 import dao.EmployeeDao;
 import entity.Account;
-import gui.GuiAdmin;
+import gui.GuiFakeAdmin;
 import helper.RegexConst;
 import helper.Validation;
 
@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 
 public class GuiCreateAccountForm extends JFrame {
 
-    private GuiAdmin guiAdmin;
+    private final GuiFakeAdmin guiFakeAdmin;
     private JPanel contentPane;
     private JButton btnCreate;
     private JTextField txtUserName;
@@ -28,8 +28,8 @@ public class GuiCreateAccountForm extends JFrame {
     private JTextField txtEmployeeId;
     private JLabel errEmployeeID;
 
-    public GuiCreateAccountForm(GuiAdmin guiAdmin) {
-        this.guiAdmin = guiAdmin;
+    public GuiCreateAccountForm(GuiFakeAdmin guiFakeAdmin) {
+        this.guiFakeAdmin = guiFakeAdmin;
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -40,8 +40,8 @@ public class GuiCreateAccountForm extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                guiAdmin.setEnabled(true);
-                guiAdmin.showListAccount();
+                guiFakeAdmin.setEnabled(true);
+                guiFakeAdmin.showListAccount();
             }
         });
 

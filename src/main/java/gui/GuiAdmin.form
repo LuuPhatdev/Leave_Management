@@ -420,7 +420,7 @@
               </tabbedpane>
             </children>
           </grid>
-          <grid id="2bf18" binding="p2" layout-manager="GridLayoutManager" row-count="2" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="2bf18" binding="p2" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="10" left="10" bottom="0" right="10"/>
             <constraints>
               <card name="Card2"/>
@@ -464,26 +464,6 @@
                   </component>
                 </children>
               </grid>
-              <scrollpane id="f7589">
-                <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <enabled value="true"/>
-                  <font name="Roboto" size="10" style="3"/>
-                  <horizontalScrollBarPolicy value="32"/>
-                  <verticalScrollBarPolicy value="20"/>
-                </properties>
-                <border type="none"/>
-                <children>
-                  <component id="79488" class="javax.swing.JTable" binding="accountTable">
-                    <constraints/>
-                    <properties>
-                      <background color="-65793"/>
-                    </properties>
-                  </component>
-                </children>
-              </scrollpane>
               <grid id="fb49c" binding="btnShowListEmployee" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="5" left="0" bottom="0" right="5"/>
                 <constraints>

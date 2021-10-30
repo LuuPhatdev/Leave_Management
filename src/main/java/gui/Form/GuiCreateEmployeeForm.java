@@ -5,7 +5,7 @@ import com.toedter.calendar.JTextFieldDateEditor;
 import dao.DepartmentDao;
 import dao.EmployeeDao;
 import entity.Employee;
-import gui.GuiAdmin;
+import gui.GuiFakeAdmin;
 import helper.RegexConst;
 import helper.Validation;
 
@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public class GuiCreateEmployeeForm extends JFrame {
 
-    private final GuiAdmin guiAdmin;
+    private final GuiFakeAdmin guiFakeAdmin;
     private JPanel contentPane;
     private JPanel formGroup;
     private JTextField txtDepartmentId;
@@ -37,8 +37,8 @@ public class GuiCreateEmployeeForm extends JFrame {
     private JLabel lbDepartmentIDError;
     private JLabel lbManagerIDError;
 
-    public GuiCreateEmployeeForm(GuiAdmin guiAdmin) {
-        this.guiAdmin = guiAdmin;
+    public GuiCreateEmployeeForm(GuiFakeAdmin guiFakeAdmin) {
+        this.guiFakeAdmin = guiFakeAdmin;
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -49,8 +49,8 @@ public class GuiCreateEmployeeForm extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                GuiCreateEmployeeForm.this.guiAdmin.setEnabled(true);
-                GuiCreateEmployeeForm.this.guiAdmin.showListEmployee();
+                GuiCreateEmployeeForm.this.guiFakeAdmin.setEnabled(true);
+                GuiCreateEmployeeForm.this.guiFakeAdmin.showListEmployee();
             }
         });
 

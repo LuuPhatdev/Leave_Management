@@ -41,4 +41,19 @@ public class DepartmentDao {
         }
         return false;
     }
+
+    public int getDepartmentChiefID(int departmentID){
+        var returnID = 0;
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from department where dep_id = ?");) {
+            cs.setInt(1, departmentID);
+            var rs = cs.executeQuery();
+            while (rs.next()){
+                returnID = rs.getInt("chief_id");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return returnID;
+    }
 }

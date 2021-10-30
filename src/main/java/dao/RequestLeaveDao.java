@@ -7,6 +7,7 @@ import entity.RequestLeave;
 
 import javax.swing.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +96,30 @@ public class RequestLeaveDao {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
         return false;
+    }
+
+    public RequestLeave getRecentlyAcceptedRequestFromEmployeeID(int employeeID){
+        var requestLeave = new RequestLeave();
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select TOP 1 * from request where employee_id = ? and request_status = 'accepted' " +
+                     "order by date_end DESC");) {
+            cs.setInt(1, employeeID);
+            var rs = cs.executeQuery();
+            while(rs.next()){
+                requestLeave.setRequestID(rs.getInt("request_id"));
+                requestLeave.setEmployeeID(rs.getInt("employee_id"));
+                requestLeave.setLeaveID(rs.getInt("leave_id"));
+                requestLeave.setDateStart(rs.getDate("date_start").toLocalDate());
+                requestLeave.setDateEnd(rs.getDate("date_end").toLocalDate());
+                requestLeave.setRequestStatus(rs.getString("request_status"));
+                requestLeave.setRequestTo(rs.getString("request_status"));
+                requestLeave.setRequestDescription(rs.getString("request_description"));
+                requestLeave.setAmount(rs.getInt("amount"));
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return requestLeave;
     }
 
     public void insertRequestLeave(RequestLeave rLeave){

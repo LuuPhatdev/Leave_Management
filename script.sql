@@ -69,19 +69,22 @@ insert into role(role_title, role_description) values ('Admin', 'who can create 
 insert into role(role_title, role_description) values ('Employee', 'Employee')
 insert into role(role_title, role_description) values ('Manager', 'who manages over their Employee')
 
-insert into department(dep_title, chief_id) values('dep A', 1)
-insert into department(dep_title, chief_id) values('dep B', 2)
+insert into department(dep_title, chief_id) values('department resolve', 2)
+insert into department(dep_title, chief_id) values('dep B', 4)
 
 insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
 values(1, 'Yan Lee', 1, '1997-05-09', '0776983835', 'leeyanxmen@gmail.com', '2021-05-09', 12, NULL)
 insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
-values(1, 'Phat Luu', 1, '1997-11-15', '0123456789', 'LuuPhat@gmail.com', '2021-11-15', 7, 3)
+values(2, 'Duong Ly', 1, '1997-11-15', '0123456987', 'duongly@gmail.com', '2021-11-16', 7, NULL)
 insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
-values(1, 'Nam Nhat', 1, '1997-07-22', '9876543210', 'NhatNam@gmail.com', '2021-07-22', 10, 1)
+values(2, 'Phat Luu', 1, '1997-11-15', '0123456789', 'LuuPhat@gmail.com', '2021-11-15', 7, 3)
+insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
+values(2, 'Nam Nhat', 1, '1997-07-22', '9876543210', 'NhatNam@gmail.com', '2021-07-22', 10, NULL)
 
 insert into account(employee_id, role_id, username, pass) values (1, 1, 'leemongyan', '12345')
-insert into account(employee_id, role_id, username, pass) values (2, 2, 'dingluuphat', '12345')
-insert into account(employee_id, role_id, username, pass) values (3, 3, 'nguyennhatnam', '12345')
+insert into account(employee_id, role_id, username, pass) values (2, 3, 'lymanhduong', '12345')
+insert into account(employee_id, role_id, username, pass) values (3, 2, 'dingluuphat', '12345')
+insert into account(employee_id, role_id, username, pass) values (4, 3, 'nguyennhatnam', '12345')
 
 insert into time_off(employee_id, date_time_off, description_time_off, used, accrued, balance)
 values (1, '2022-05-09', 'nghi gi do', 0, 0, 0)

@@ -128,4 +128,26 @@ public class AccountDao {
         }
         return false;
     }
+
+    public List<Account> getSearchedUserName(String username){
+        var search = "%"+username+"%";
+        List<Account> listSearchedAccount = new ArrayList<>();
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from account where username like ?");
+        ) {
+            cs.setString(1, search);
+            var rs = cs.executeQuery();
+            while (rs.next()){
+                var account = new Account();
+                account.setEmloyeeId(rs.getInt("employee_id"));
+                account.setRoleId(rs.getInt("role_id"));
+                account.setUserName(rs.getString("username"));
+                account.setPassword(rs.getString("pass"));
+                listSearchedAccount.add(account);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return listSearchedAccount;
+    }
 }

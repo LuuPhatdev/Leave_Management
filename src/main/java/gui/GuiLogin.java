@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import models.ScheduleEvent;
 
 public class GuiLogin extends JFrame {
     private JTextField txtUseName;
@@ -48,8 +47,6 @@ public class GuiLogin extends JFrame {
 //        contentPane = new JPanel();
 //        Enable this line above if get trouble with "Content pane cannot be set to null"
 //        Sometimes app doesn't paint the UI, please Click "Recompile" or Crt+Shift+F9  to rebuild entire the source
-        ScheduleEvent shedule = new ScheduleEvent();
-        shedule.run();
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

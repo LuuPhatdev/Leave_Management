@@ -428,7 +428,7 @@ public class GuiFakeManager extends JFrame {
             lType = lTypeDao.getLeaveTypeInfoByName(cBLeaveType.getSelectedItem().toString());
             var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
             var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
-            var admin = employeeDao.getEmployeeByEmployeeId(accountDao.getAdminID());
+            var managerForSpecialLeaveTypes = employeeDao.getEmployeeByEmployeeId(departmentDao.getDepartmentChiefID(1));
             var requestForm = new RequestLeave();
             var check = 1;
 
@@ -447,7 +447,7 @@ public class GuiFakeManager extends JFrame {
                 if (lType.getLeaveID() == 1 || lType.getLeaveID() == 2) {
                     requestForm.setRequestTo(manager.getEmail());
                 } else {
-                    requestForm.setRequestTo(admin.getEmail());
+                    requestForm.setRequestTo(managerForSpecialLeaveTypes.getEmail());
                 }
 
                 var amount = 0;

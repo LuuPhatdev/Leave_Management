@@ -17,6 +17,8 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -72,6 +74,7 @@ public class GuiFakeEmployee extends JFrame {
     private LeaveTypeDao lTypeDao = new LeaveTypeDao();
     private RequestLeaveDao rLeaveDao = new RequestLeaveDao();
     private AccountDao accountDao = new AccountDao();
+    private RequestLeaveDao requestDao = new RequestLeaveDao();
     private Role role = new Role();
 
     public GuiFakeEmployee(int empID, String userName) {
@@ -298,79 +301,83 @@ public class GuiFakeEmployee extends JFrame {
 
     private void btnSendRequestActionPerformed(ActionEvent e) {
 
+        var recentlyAcceptedRequest = requestDao.getRecentlyAcceptedRequestFromEmployeeID(employeeID);
+
         if (rLeaveDao.pendingCheckingByEmployeeID(employeeID)) {
 
             JOptionPane.showMessageDialog(null, "you already sent a request, please wait still your request is " +
                     "checked.");
 
-        } else {
-            var lType = new LeaveType();
-            lType = lTypeDao.getLeaveTypeInfoByName(cBLeaveType.getSelectedItem().toString());
-            var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
-            var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
-            var admin = employeeDao.getEmployeeByEmployeeId(accountDao.getAdminID());
-            var requestForm = new RequestLeave();
-            var check = 1;
+        } else if(LocalDate.now().compareTo( recentlyAcceptedRequest.getDateEnd() ) < 0 ) {
+            JOptionPane.showMessageDialog(null,"your recently accepted request still not over.");
+        } else{
+                var lType = new LeaveType();
+                lType = lTypeDao.getLeaveTypeInfoByName(cBLeaveType.getSelectedItem().toString());
+                var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
+                var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
+                var managerForSpecialLeaveTypes = employeeDao.getEmployeeByEmployeeId(departmentDao.getDepartmentChiefID(1));
+                var requestForm = new RequestLeave();
+                var check = 1;
 
-            while (check > 0) {
-                requestForm.setEmployeeID(employeeID);
-                requestForm.setLeaveID(lType.getLeaveID());
-                if (jDateStartChooser.getDate() == null || jDateEndChooser.getDate() == null) {
-                    JOptionPane.showMessageDialog(null, "please select days for Day start and Day end.");
-                    break;
-                }
-
-                requestForm.setDateStart(jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
-                requestForm.setDateEnd(jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
-                requestForm.setRequestStatus("pending");
-
-                if (lType.getLeaveID() == 1 || lType.getLeaveID() == 2) {
-                    requestForm.setRequestTo(manager.getEmail());
-                } else {
-                    requestForm.setRequestTo(admin.getEmail());
-                }
-
-                var amount = 0;
-                if (jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate()) != 0) {
-                    if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
-                            jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
-                        amount = 1;
+                while (check > 0) {
+                    requestForm.setEmployeeID(employeeID);
+                    requestForm.setLeaveID(lType.getLeaveID());
+                    if (jDateStartChooser.getDate() == null || jDateEndChooser.getDate() == null) {
+                        JOptionPane.showMessageDialog(null, "please select days for Day start and Day end.");
+                        break;
                     }
-                    Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-                    long diffDate =
-                            jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
-                                    jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
-                                    .filter(d -> !weekend.contains(d.getDayOfWeek()))
-                                    .count();
-                    amount += Math.toIntExact(diffDate);
-                }
 
-                if ((double) amount <= employee.getAnnualLeave()) {
-                    requestForm.setAmount(amount);
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                            "exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
-                    break;
-                }
+                    requestForm.setDateStart(jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
+                    requestForm.setDateEnd(jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
+                    requestForm.setRequestStatus("pending");
 
-                if (txtARequestDescription.getText().trim().length() == 0 ||
-                        txtARequestDescription.getText() == null) {
-                    JOptionPane.showMessageDialog(null, "please do not leave this description empty.");
-                    break;
-                }
+                    if (lType.getLeaveID() == 1 || lType.getLeaveID() == 2) {
+                        requestForm.setRequestTo(manager.getEmail());
+                    } else {
+                        requestForm.setRequestTo(managerForSpecialLeaveTypes.getEmail());
+                    }
 
-                if (txtARequestDescription.getText().trim().length() > 200) {
-                    JOptionPane.showMessageDialog(null, "maximum 200 letters is allowed in description.");
-                    break;
-                }
+                    var amount = 0;
+                    if (jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate()) != 0) {
+                        if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
+                                jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
+                            amount = 1;
+                        }
+                        Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+                        long diffDate =
+                                jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
+                                                jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
+                                        .filter(d -> !weekend.contains(d.getDayOfWeek()))
+                                        .count();
+                        amount += Math.toIntExact(diffDate);
+                    }
 
-                requestForm.setRequestDescription(txtARequestDescription.getText().trim());
-                rLeaveDao.insertRequestLeave(requestForm);
-                SendMail.sendMailForRequestLeave(requestForm);
-                check = 0;
+                    if ((double) amount <= employee.getAnnualLeave()) {
+                        requestForm.setAmount(amount);
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
+                        break;
+                    }
+
+                    if (txtARequestDescription.getText().trim().length() == 0 ||
+                            txtARequestDescription.getText() == null) {
+                        JOptionPane.showMessageDialog(null, "please do not leave this description empty.");
+                        break;
+                    }
+
+                    if (txtARequestDescription.getText().trim().length() > 200) {
+                        JOptionPane.showMessageDialog(null, "maximum 200 letters is allowed in description.");
+                        break;
+                    }
+
+                    requestForm.setRequestDescription(txtARequestDescription.getText().trim());
+                    rLeaveDao.insertRequestLeave(requestForm);
+                    SendMail.sendMailForRequestLeave(requestForm);
+                    check = 0;
+                }
             }
         }
-    }
 
     //Switch Tag
     private void btnPersonalActionPerformed(MouseEvent e) {
@@ -432,7 +439,13 @@ public class GuiFakeEmployee extends JFrame {
         editorStart.setEditable(false);
         editorEnd.setEditable(false);
         jDateEndChooser.setEnabled(false);
-        jDateStartChooser.getJCalendar().setMinSelectableDate(new Date());
-        jDateEndChooser.getJCalendar().setMinSelectableDate(new Date());
+
+        var calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DATE, 1);
+        var tomorrow = calendar.getTime();
+
+        jDateStartChooser.getJCalendar().setMinSelectableDate(tomorrow);
+        jDateEndChooser.getJCalendar().setMinSelectableDate(tomorrow);
     }
 }

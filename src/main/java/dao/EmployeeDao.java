@@ -132,29 +132,27 @@ public class EmployeeDao {
         }
     }
 
-    public List<Employee> getAnnualLeave() {
-        List<Employee> listEmployee = new ArrayList<>();
-
+    public void deleteEmployeeByEmployeeID(int employeeID){
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();
-             var cs = connect.prepareStatement("select annual_leave from employee");) {
-            var rs = cs.executeQuery();
-            while (rs.next()) {
-                var employee = new Employee();
-                employee.setAnnualLeave(rs.getDouble("annual_leave"));
-                listEmployee.add(employee);
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
-        }
-        return listEmployee;
-    }
-
-    public void upDateAnnualLeave() {
-        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
-             var cs = connect.prepareStatement("UPDATE employee set annual_leave = annual_leave+1");) {
+             var cs = connect.prepareStatement("delete from employee where employee_id = ?");) {
+            cs.setInt(1, employeeID);
             cs.executeUpdate();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
+    }
+
+    public List<Employee> getSearchedEmployee(String employeeName){
+        var search = "%"+employeeName+"%";
+        List<Employee> listSearchedEmployee = new ArrayList<>();
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from employee where fullname like ?");
+        ) {
+            cs.setString(1, search);
+            fetchListEmployee(listSearchedEmployee, cs);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return listSearchedEmployee;
     }
 }

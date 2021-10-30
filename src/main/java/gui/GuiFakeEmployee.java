@@ -10,10 +10,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.DayOfWeek;
@@ -68,6 +65,7 @@ public class GuiFakeEmployee extends JFrame {
     public JLabel btnInbox;
     private JPanel p4;
     private JButton btnRequest;
+    private JTable tbInbox;
     private EmployeeDao employeeDao = new EmployeeDao();
     private DepartmentDao departmentDao = new DepartmentDao();
     private AnnualLeaveDao annualLeaveDao = new AnnualLeaveDao();
@@ -100,6 +98,11 @@ public class GuiFakeEmployee extends JFrame {
         txtGender.setBorder(null);
         txtDepartment.setBorder(null);
         txtBirthdate.setBorder(null);
+
+        tbAnnualLeave.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tbInbox.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+
 
         //Table Styling
         tbAnnualLeave.setRowHeight(30);
@@ -187,6 +190,68 @@ public class GuiFakeEmployee extends JFrame {
                 btnInboxActionPerformed(e);
             }
         });
+
+//        inbox tag
+        var tableModel2 = this.showInbox();
+        tbInbox.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                TbInboxMouseClicked(e, tableModel2);
+            }
+        });
+        cBLeaveType.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                if(employee.getAnnualLeave() == 0){
+                    if(cBLeaveType.getSelectedItem().equals("Annual leave") || cBLeaveType.getSelectedItem().equals("Sick leave")){
+                        JOptionPane.showMessageDialog(null, "can not choose this when annual leave is 0.");
+                        cBLeaveType.setSelectedIndex(0);
+                    }
+                }
+            }
+        });
+    }
+
+    private void TbInboxMouseClicked(MouseEvent e, DefaultTableModel tableModel2) {
+        if (SwingUtilities.isRightMouseButton(e)) {
+            if (tbInbox.getSelectedRow() == -1) {
+                JOptionPane.showMessageDialog(null, "Please select row first.");
+            } else {
+                var status = tbInbox.getModel().getValueAt(tbInbox.getSelectedRow(), 0).toString();
+                if(status.equals("cancelled")){
+                    JOptionPane.showMessageDialog(null, "Can not cancel a cancelled request.");
+                } else if (status.equals("denied")){
+                    JOptionPane.showMessageDialog(null, "Can not cancel a denied request.");
+                } else if (LocalDate.now().compareTo(
+                        LocalDate.parse( tbInbox.getModel().getValueAt(tbInbox.getSelectedRow(), 2).toString() ) ) >= 0){
+                    JOptionPane.showMessageDialog(null, "Can not cancel an accepted request already in effect.");
+                } else{
+                    var cancelling = new GuiCancellingRequest(this, tbInbox, tableModel2);
+                }
+            }
+        }
+    }
+
+    private DefaultTableModel showInbox(){
+        String[] collumnNames ={"Status","Request ID", "From", "To", "Leave Type", "Description"};
+        var tableModel = new DefaultTableModel(collumnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return switch (col) {
+                    case 0, 1, 2, 3, 4, 5 -> false;
+                    default -> true;
+                };
+            }
+        };
+        var listRequestLeaveOfEmployeeID = requestDao.getListRequestLeaveByEmployeeID(employeeID);
+        listRequestLeaveOfEmployeeID.forEach(emp -> tableModel.addRow( new Object[]{
+                emp.getRequestStatus(),
+                emp.getRequestID(),
+                emp.getDateStart(),
+                emp.getDateEnd(),
+                lTypeDao.getLeaveTypeInfoByID(emp.getLeaveID()).getLeaveType(),
+                emp.getRequestDescription()
+        }));
+        tbInbox.setModel(tableModel);
+        return tableModel;
     }
 
     private void showHistory() {
@@ -303,14 +368,13 @@ public class GuiFakeEmployee extends JFrame {
 
         var recentlyAcceptedRequest = requestDao.getRecentlyAcceptedRequestFromEmployeeID(employeeID);
 
-        if (rLeaveDao.pendingCheckingByEmployeeID(employeeID)) {
+            if (rLeaveDao.pendingCheckingByEmployeeID(employeeID)) {
 
-            JOptionPane.showMessageDialog(null, "you already sent a request, please wait still your request is " +
-                    "checked.");
+                JOptionPane.showMessageDialog(null, "you already sent a request, please wait still your request is " +
+                        "checked.");
 
-        } else if(LocalDate.now().compareTo( recentlyAcceptedRequest.getDateEnd() ) < 0 ) {
-            JOptionPane.showMessageDialog(null,"your recently accepted request still not over.");
-        } else{
+            } else if(recentlyAcceptedRequest.getDateEnd() == null || LocalDate.now().compareTo( recentlyAcceptedRequest.getDateEnd() ) >= 0) {
+
                 var lType = new LeaveType();
                 lType = lTypeDao.getLeaveTypeInfoByName(cBLeaveType.getSelectedItem().toString());
                 var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
@@ -373,11 +437,14 @@ public class GuiFakeEmployee extends JFrame {
 
                     requestForm.setRequestDescription(txtARequestDescription.getText().trim());
                     rLeaveDao.insertRequestLeave(requestForm);
+                    this.showInbox();
                     SendMail.sendMailForRequestLeave(requestForm);
                     check = 0;
                 }
+            }else{
+                JOptionPane.showMessageDialog(null,"your recently accepted request still not over.");
             }
-        }
+    }
 
     //Switch Tag
     private void btnPersonalActionPerformed(MouseEvent e) {

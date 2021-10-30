@@ -77,7 +77,7 @@ values(1, 'Yan Lee', 1, '1997-05-09', '0776983835', 'leeyanxmen@gmail.com', '202
 insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
 values(1, 'Duong Ly', 1, '1997-11-15', '0123456987', 'duongly@gmail.com', '2021-11-16', 7, NULL)
 insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
-values(2, 'Phat Luu', 1, '1997-11-15', '0123456789', 'LuuPhat@gmail.com', '2021-11-15', 7, 3)
+values(2, 'Phat Luu', 1, '1997-11-15', '0123456789', 'LuuPhat@gmail.com', '2021-11-15', 7, 4)
 insert into employee(dep_id, fullname, gender, date_of_birth, phone, email, date_start, annual_leave, manager_id)
 values(2, 'Nam Nhat', 1, '1997-07-22', '9876543210', 'NhatNam@gmail.com', '2021-07-22', 10, NULL)
 

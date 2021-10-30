@@ -90,4 +90,14 @@ public class AnnualLeaveDao {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
+
+    public void deleteAnnualLeaveByEmployeeID(int employeeID){
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("delete from time_off where employee_id = ?");) {
+            cs.setInt(1, employeeID);
+            cs.executeUpdate();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+    }
 }

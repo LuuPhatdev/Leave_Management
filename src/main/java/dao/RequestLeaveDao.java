@@ -150,4 +150,14 @@ public class RequestLeaveDao {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
+
+    public void deleteRequestLeaveByEmployeeID(int employeeID){
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("delete from request where employee_id = ?");) {
+            cs.setInt(1, employeeID);
+            cs.executeUpdate();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+    }
 }

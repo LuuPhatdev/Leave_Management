@@ -56,4 +56,18 @@ public class DepartmentDao {
         }
         return returnID;
     }
+
+    public boolean checkIfIsChiefDepartment (int employeeID){
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from department where chief_id = ?");) {
+            cs.setInt(1, employeeID);
+            var rs = cs.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return false;
+    }
 }

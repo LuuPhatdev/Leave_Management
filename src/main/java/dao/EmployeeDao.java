@@ -131,4 +131,14 @@ public class EmployeeDao {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
+
+    public void deleteEmployeeByEmployeeID(int employeeID){
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("delete from employee where employee_id = ?");) {
+            cs.setInt(1, employeeID);
+            cs.executeUpdate();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+    }
 }

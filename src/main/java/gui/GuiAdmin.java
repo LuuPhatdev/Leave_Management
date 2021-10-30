@@ -1,7 +1,6 @@
 package gui;
 
-import dao.AccountDao;
-import dao.EmployeeDao;
+import dao.*;
 import entity.Account;
 import entity.Role;
 import gui.Form.GuiCreateAccountForm;
@@ -263,17 +262,41 @@ public class GuiAdmin extends JFrame {
     }
 
     private void btnDeleteActionPerformed(MouseEvent e) {
-        int result = JOptionPane.showOptionDialog(null, "Are you sure exit?", "Exit", JOptionPane.YES_NO_OPTION,
+        int result = JOptionPane.showOptionDialog(null, "Are you sure you want to delete?", "Delete", JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE, null, null, null);
 
         if (result == JOptionPane.YES_OPTION) {
             var dao = new AccountDao();
-            var rowindex = tableShowAccount.getSelectedRow();
-            var employeeId = tableShowAccount.getValueAt(rowindex, 0).toString();
-
             var account = new Account();
-            account.setEmloyeeId(Integer.parseInt(employeeId));
-            dao.deleteAccount(account);
+            var requestLeaveDao = new RequestLeaveDao();
+            var annualLeaveDao = new AnnualLeaveDao();
+            var departmentDao = new DepartmentDao();
+            var employeeDao = new EmployeeDao();
+
+            if(tableShowAccount.getSelectedRow() != -1){
+
+                var rowindex = tableShowAccount.getSelectedRow();
+                var employeeId = tableShowAccount.getValueAt(rowindex, 0).toString();
+
+                account.setEmloyeeId(Integer.parseInt(employeeId));
+                dao.deleteAccount(account);
+                showListAccount();
+            }else{
+                var rowindex = tableShowEmployee.getSelectedRow();
+                var employeeID = tableShowEmployee.getValueAt(rowindex, 0).toString();
+
+                if(!departmentDao.checkIfIsChiefDepartment(Integer.parseInt(employeeID))){
+                    requestLeaveDao.deleteRequestLeaveByEmployeeID(Integer.parseInt(employeeID));
+                    annualLeaveDao.deleteAnnualLeaveByEmployeeID(Integer.parseInt(employeeID));
+                    account.setEmloyeeId(Integer.parseInt(employeeID));
+                    dao.deleteAccount(account);
+                    employeeDao.deleteEmployeeByEmployeeID(Integer.parseInt(employeeID));
+                    showListEmployee();
+                    showListAccount();
+                }else{
+                    JOptionPane.showMessageDialog(null, "you cant delete a chief of department.");
+                }
+            }
         }
     }
 

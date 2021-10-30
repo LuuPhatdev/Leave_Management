@@ -5,7 +5,7 @@ import com.toedter.calendar.JTextFieldDateEditor;
 import dao.DepartmentDao;
 import dao.EmployeeDao;
 import entity.Employee;
-import gui.GuiAdmin;
+import gui.GuiFakeAdmin;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class GuiUpdateEmloyee extends JFrame {
 
-    private final GuiAdmin guiAdmin;
+    private final GuiFakeAdmin guiFakeAdmin;
     private JPanel contentPane;
     private JPanel formGroup;
     public JTextField txtDepartmentId;
@@ -34,8 +34,8 @@ public class GuiUpdateEmloyee extends JFrame {
     public JTextField txtAnnualLeave;
     public JComboBox JcomboboxGender;
 
-    public GuiUpdateEmloyee(GuiAdmin guiAdmin) {
-        this.guiAdmin = guiAdmin;
+    public GuiUpdateEmloyee(GuiFakeAdmin guiFakeAdmin) {
+        this.guiFakeAdmin = guiFakeAdmin;
 
         txtEmployeeId.setEditable(false);
 
@@ -48,7 +48,7 @@ public class GuiUpdateEmloyee extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                GuiUpdateEmloyee.this.guiAdmin.setEnabled(true);
+                GuiUpdateEmloyee.this.guiFakeAdmin.setEnabled(true);
             }
         });
 
@@ -106,7 +106,7 @@ public class GuiUpdateEmloyee extends JFrame {
                 employee.setAnnualLeave(annualLeave);
                 employee.setManagerId(managerId);
                 dao.updateSingleEmployee(employee);
-                guiAdmin.showListEmployee();
+                guiFakeAdmin.showListEmployee();
                 this.dispose();
                 count --;
             }

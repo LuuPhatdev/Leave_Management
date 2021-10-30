@@ -184,26 +184,61 @@ public class GuiAdmin extends JFrame {
 
     private void btnSearchActionPerformed(ActionEvent e) {
         if (txtSearchByName.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please input User Name");
-            tableShowAccount.repaint();
-        } else {
-            try {
-                Account acc = Account.getAccountFromUserName(txtSearchByName.getText().trim().replaceAll(("\\s"), ""));
-                String[] columnTitle = {"EMPLOYEE ID", "ROLE ID", "USER NAME", "PASSWORD"};
-                DefaultTableModel model = new DefaultTableModel(columnTitle, 0);
-
-                model.addRow(new Object[]{
-                        acc.getEmloyeeId(),
-                        acc.getRoleId(),
-                        acc.getUserName(),
-                        acc.getPassword()
-                });
-
-                tableShowAccount.setModel(model);
-            } catch (Exception em) {
-                JOptionPane.showMessageDialog(null, "Account does not exists!");
-                txtSearchByName.setText("");
+//            JOptionPane.showMessageDialog(null, "Please input User Name");
+//            tableShowAccount.repaint();
+            if(tabbedPaneShow.getSelectedIndex() == 0){
+                showListAccount();
+            }else{
+                showListEmployee();
             }
+        } else {
+            if(tabbedPaneShow.getSelectedIndex() == 0){
+                var accountDao = new AccountDao();
+                try {
+                    var listAcc = accountDao.getSearchedUserName(txtSearchByName.getText().trim().replaceAll(("\\s"), ""));
+                    String[] columnTitle = {"EMPLOYEE ID", "ROLE ID", "USER NAME", "PASSWORD"};
+                    DefaultTableModel model = new DefaultTableModel(columnTitle, 0);
+
+                    listAcc.forEach(user -> model.addRow(new Object[]{
+                            user.getEmloyeeId(),
+                            user.getRoleId(),
+                            user.getUserName(),
+                            user.getPassword()
+                    }));
+
+                    tableShowAccount.setModel(model);
+                } catch (Exception em) {
+                    JOptionPane.showMessageDialog(null, "Account does not exists!");
+                    txtSearchByName.setText("");
+                }
+            }else{
+                var employeeDao = new EmployeeDao();
+                try {
+                    var listEmployee = employeeDao.getSearchedEmployee(txtSearchByName.getText().trim().replaceAll(("\\s"), ""));
+                    String[] columnTitle = {"EMPLOYEE ID", "DEPARTMENT ID", "FULL NAME", "GENDER", "DATE OF BIRTH", "PHONE",
+                            "EMAIL", "DATE START", "ANNUAL LEAVE", "MANAGER ID"};
+                    DefaultTableModel model = new DefaultTableModel(columnTitle, 0);
+
+                    listEmployee.forEach(employee -> model.addRow(new Object[]{
+                            employee.getEmployeeId(),
+                            employee.getDepartmentId(),
+                            employee.getFullName(),
+                            employee.getGender(),
+                            employee.getDateOfBirth(),
+                            employee.getPhone(),
+                            employee.getEmail(),
+                            employee.getDateStart(),
+                            employee.getAnnualLeave(),
+                            employee.getManagerId()
+                    }));
+
+                    tableShowEmployee.setModel(model);
+                } catch (Exception em) {
+                    JOptionPane.showMessageDialog(null, "Account does not exists!");
+                    txtSearchByName.setText("");
+                }
+            }
+
         }
     }
 
@@ -289,15 +324,20 @@ public class GuiAdmin extends JFrame {
 
                 var rowindex = tableShowAccount.getSelectedRow();
                 var employeeId = tableShowAccount.getValueAt(rowindex, 0).toString();
-
-                account.setEmloyeeId(Integer.parseInt(employeeId));
-                dao.deleteAccount(account);
+                if(dao.getAdminID() == Integer.parseInt(employeeId)){
+                    JOptionPane.showMessageDialog(null, "you cant delete admin's account.");
+                }else{
+                    account.setEmloyeeId(Integer.parseInt(employeeId));
+                    dao.deleteAccount(account);
+                }
                 showListAccount();
             }else if(tableShowEmployee.getSelectedRow() != -1){
                 var rowindex = tableShowEmployee.getSelectedRow();
                 var employeeID = tableShowEmployee.getValueAt(rowindex, 0).toString();
 
-                if(!departmentDao.checkIfIsChiefDepartment(Integer.parseInt(employeeID))){
+                if(dao.getAdminID() == Integer.parseInt(employeeID)){
+                    JOptionPane.showMessageDialog(null, "you cant delete admin's employee info.");
+                }else if(!departmentDao.checkIfIsChiefDepartment(Integer.parseInt(employeeID))){
                     requestLeaveDao.deleteRequestLeaveByEmployeeID(Integer.parseInt(employeeID));
                     annualLeaveDao.deleteAnnualLeaveByEmployeeID(Integer.parseInt(employeeID));
                     account.setEmloyeeId(Integer.parseInt(employeeID));
@@ -308,7 +348,8 @@ public class GuiAdmin extends JFrame {
                 }else{
                     JOptionPane.showMessageDialog(null, "you cant delete a chief of department.");
                 }
-            }else{
+
+            }else {
                 JOptionPane.showMessageDialog(null, "Please select row you want to delete.");
             }
         }

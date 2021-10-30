@@ -141,4 +141,18 @@ public class EmployeeDao {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
+
+    public List<Employee> getSearchedEmployee(String employeeName){
+        var search = "%"+employeeName+"%";
+        List<Employee> listSearchedEmployee = new ArrayList<>();
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from employee where fullname like ?");
+        ) {
+            cs.setString(1, search);
+            fetchListEmployee(listSearchedEmployee, cs);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return listSearchedEmployee;
+    }
 }

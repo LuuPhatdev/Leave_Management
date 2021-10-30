@@ -82,15 +82,18 @@ public class GuiFakeManager extends JFrame {
     public GuiFakeManager(int empID, String userName) {
         this.userName = userName;
         this.employeeID = empID;
+
         var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
         var department = departmentDao.getDepartmentInfo(employee.getDepartmentId());
-        Account acc = Account.getAccountFromUserName(userName);
         var allYears = annualLeaveDao.groupByYear();
+
+        Account acc = Account.getAccountFromUserName(userName);
         var role = Role.getListRole(acc.getRoleId());
 
         employeeName.setText(employee.getFullName());
         employeeRole.setText(role.getRoleTitle());
 
+        //Innit
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(200, 200, 700, 480);

@@ -47,6 +47,7 @@ public class GuiAdmin extends JFrame {
         Account acc = Account.getAccountFromUserName(userName);
         Role role = Role.getListRole(acc.getRoleId());
 
+        //Innit Layout
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 900, 637);
@@ -58,11 +59,17 @@ public class GuiAdmin extends JFrame {
         this.showListEmployee();
         btnUpdate.setEnabled(false);
 
+        //Tale styling
+        tableShowEmployee.setRowHeight(30);
+        tableShowAccount.setRowHeight(30);
+
         employeeName.setText(acc.getUserName());
         employeeRole.setText(role.getRoleTitle());
         tableShowAccount.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableShowEmployee.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+
+        //Hover Cursor Pointer
         btn1.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn1.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -78,6 +85,8 @@ public class GuiAdmin extends JFrame {
         });
 
         btnLogOut.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        //Event
         btnLogOut.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 btnLogOutActionPerformed(e);
@@ -125,13 +134,14 @@ public class GuiAdmin extends JFrame {
             }
         });
     }
-//deselect tables
+
+    //Unselect Tables
     private void ContentPaneMouseClicked(MouseEvent e) {
         tableShowAccount.clearSelection();
         tableShowEmployee.clearSelection();
     }
 
-
+    //Show List Account
     public void showListAccount() {
         AccountDao usersDao = new AccountDao();
         String[] columnTitle = {"EMPLOYEE ID", "ROLE ID", "USER NAME", "PASSWORD"};
@@ -151,8 +161,9 @@ public class GuiAdmin extends JFrame {
                 user.getUserName(),
                 user.getPassword(),}));
         tableShowAccount.setModel(model);
-    } //-- Show list Account
+    }
 
+    //-- Show list Employee
     public void showListEmployee() {
         EmployeeDao employeeDao = new EmployeeDao();
         String[] columnTitle = {"EMPLOYEE ID", "DEPARTMENT ID", "FULL NAME", "GENDER", "DATE OF BIRTH", "PHONE",
@@ -180,22 +191,22 @@ public class GuiAdmin extends JFrame {
                 user.getManagerId(),
         }));
         tableShowEmployee.setModel(model);
-    } //-- Show list Employee
+    }
 
+    //-- Search
     private void btnSearchActionPerformed(ActionEvent e) {
         if (txtSearchByName.getText().isEmpty()) {
-//            JOptionPane.showMessageDialog(null, "Please input User Name");
-//            tableShowAccount.repaint();
-            if(tabbedPaneShow.getSelectedIndex() == 0){
+            if (tabbedPaneShow.getSelectedIndex() == 0) {
                 showListAccount();
-            }else{
+            } else {
                 showListEmployee();
             }
         } else {
-            if(tabbedPaneShow.getSelectedIndex() == 0){
+            if (tabbedPaneShow.getSelectedIndex() == 0) {
                 var accountDao = new AccountDao();
                 try {
-                    var listAcc = accountDao.getSearchedUserName(txtSearchByName.getText().trim().replaceAll(("\\s"), ""));
+                    var listAcc = accountDao.getSearchedUserName(txtSearchByName.getText().trim().replaceAll(("\\s"),
+                            ""));
                     String[] columnTitle = {"EMPLOYEE ID", "ROLE ID", "USER NAME", "PASSWORD"};
                     DefaultTableModel model = new DefaultTableModel(columnTitle, 0);
 
@@ -211,11 +222,13 @@ public class GuiAdmin extends JFrame {
                     JOptionPane.showMessageDialog(null, "Account does not exists!");
                     txtSearchByName.setText("");
                 }
-            }else{
+            } else {
                 var employeeDao = new EmployeeDao();
                 try {
-                    var listEmployee = employeeDao.getSearchedEmployee(txtSearchByName.getText().trim().replaceAll(("\\s"), ""));
-                    String[] columnTitle = {"EMPLOYEE ID", "DEPARTMENT ID", "FULL NAME", "GENDER", "DATE OF BIRTH", "PHONE",
+                    var listEmployee = employeeDao.getSearchedEmployee(txtSearchByName.getText().trim().replaceAll((
+                            "\\s"), ""));
+                    String[] columnTitle = {"EMPLOYEE ID", "DEPARTMENT ID", "FULL NAME", "GENDER", "DATE OF BIRTH",
+                            "PHONE",
                             "EMAIL", "DATE START", "ANNUAL LEAVE", "MANAGER ID"};
                     DefaultTableModel model = new DefaultTableModel(columnTitle, 0);
 
@@ -238,30 +251,30 @@ public class GuiAdmin extends JFrame {
                     txtSearchByName.setText("");
                 }
             }
-
         }
     }
 
+    //-- Update Account
     private void btnUpdateActionPerformed(MouseEvent e) {
         if (tabbedPaneShow.getSelectedIndex() == 0) {
             var rowindex = tableShowAccount.getSelectedRow();
             if (rowindex == -1) {
                 JOptionPane.showMessageDialog(null, "Please select row you want to update.");
             } else {
-                if(tabbedPaneShow.getSelectedIndex()==0){
-                var employeeId = tableShowAccount.getValueAt(rowindex, 0).toString();
-                var roleId = tableShowAccount.getValueAt(rowindex, 1).toString();
-                var userName = tableShowAccount.getValueAt(rowindex, 2).toString();
-                var password = tableShowAccount.getValueAt(rowindex, 3).toString();
+                if (tabbedPaneShow.getSelectedIndex() == 0) {
+                    var employeeId = tableShowAccount.getValueAt(rowindex, 0).toString();
+                    var roleId = tableShowAccount.getValueAt(rowindex, 1).toString();
+                    var userName = tableShowAccount.getValueAt(rowindex, 2).toString();
+                    var password = tableShowAccount.getValueAt(rowindex, 3).toString();
 
-                var dialog = new GuiUpdateAccountForm(this);
-                dialog.txtEmployeeId.setText(employeeId);
-                dialog.txtRoleId.setText(roleId);
-                dialog.txtUserName.setText(userName);
-                dialog.txtPassword.setText(password);
-                btnUpdate.setEnabled(true);
-                dialog.setVisible(true);
-                this.setEnabled(false);
+                    var dialog = new GuiUpdateAccountForm(this);
+                    dialog.txtEmployeeId.setText(employeeId);
+                    dialog.txtRoleId.setText(roleId);
+                    dialog.txtUserName.setText(userName);
+                    dialog.txtPassword.setText(password);
+                    btnUpdate.setEnabled(true);
+                    dialog.setVisible(true);
+                    this.setEnabled(false);
                 }
             }
         } else {
@@ -304,12 +317,15 @@ public class GuiAdmin extends JFrame {
         }
     }
 
+    //-- Show List Account
     private void btnShowListAccount(MouseEvent e) {
         this.showListAccount();
     }
 
+    //-- Delete Account and Employee
     private void btnDeleteActionPerformed(MouseEvent e) {
-        int result = JOptionPane.showOptionDialog(null, "Are you sure you want to delete?", "Delete", JOptionPane.YES_NO_OPTION,
+        int result = JOptionPane.showOptionDialog(null, "Are you sure you want to delete?", "Delete",
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.PLAIN_MESSAGE, null, null, null);
 
         if (result == JOptionPane.YES_OPTION) {
@@ -320,24 +336,24 @@ public class GuiAdmin extends JFrame {
             var departmentDao = new DepartmentDao();
             var employeeDao = new EmployeeDao();
 
-            if(tableShowAccount.getSelectedRow() != -1){
+            if (tableShowAccount.getSelectedRow() != -1) {
 
                 var rowindex = tableShowAccount.getSelectedRow();
                 var employeeId = tableShowAccount.getValueAt(rowindex, 0).toString();
-                if(dao.getAdminID() == Integer.parseInt(employeeId)){
+                if (dao.getAdminID() == Integer.parseInt(employeeId)) {
                     JOptionPane.showMessageDialog(null, "you cant delete admin's account.");
-                }else{
+                } else {
                     account.setEmloyeeId(Integer.parseInt(employeeId));
                     dao.deleteAccount(account);
                 }
                 showListAccount();
-            }else if(tableShowEmployee.getSelectedRow() != -1){
+            } else if (tableShowEmployee.getSelectedRow() != -1) {
                 var rowindex = tableShowEmployee.getSelectedRow();
                 var employeeID = tableShowEmployee.getValueAt(rowindex, 0).toString();
 
-                if(dao.getAdminID() == Integer.parseInt(employeeID)){
+                if (dao.getAdminID() == Integer.parseInt(employeeID)) {
                     JOptionPane.showMessageDialog(null, "you cant delete admin's employee info.");
-                }else if(!departmentDao.checkIfIsChiefDepartment(Integer.parseInt(employeeID))){
+                } else if (!departmentDao.checkIfIsChiefDepartment(Integer.parseInt(employeeID))) {
                     requestLeaveDao.deleteRequestLeaveByEmployeeID(Integer.parseInt(employeeID));
                     annualLeaveDao.deleteAnnualLeaveByEmployeeID(Integer.parseInt(employeeID));
                     account.setEmloyeeId(Integer.parseInt(employeeID));
@@ -345,33 +361,35 @@ public class GuiAdmin extends JFrame {
                     employeeDao.deleteEmployeeByEmployeeID(Integer.parseInt(employeeID));
                     showListEmployee();
                     showListAccount();
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(null, "you cant delete a chief of department.");
                 }
 
-            }else {
+            } else {
                 JOptionPane.showMessageDialog(null, "Please select row you want to delete.");
             }
         }
     }
 
+    //-- Create Account
     private void btnCreateAccountActionPerformed(MouseEvent e) {
         var form = new GuiCreateAccountForm(this);
         form.setVisible(true);
         this.setEnabled(false);
     }
 
+    //--Create Employee
     private void btnAddEmployeeActionPerformed(MouseEvent e) {
         var form = new GuiCreateEmployeeForm(this);
         form.setVisible(true);
         this.setEnabled(false);
     }
 
+    //--Switch Tabbled Pane
     private void btn1ActionPerformed(MouseEvent e) {
         p1.setVisible(true);
         p2.setVisible(false);
     }
-
     private void btn2ActionPerformed(MouseEvent e) {
         p1.setVisible(false);
         p2.setVisible(true);

@@ -72,7 +72,12 @@ public class GuiRequestChecking extends JFrame {
         annualLeave.setDateTimeOff(LocalDate.parse(table.getModel().getValueAt(table.getSelectedRow(), 4).toString(),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         annualLeave.setDescriptionTimeOff(table.getModel().getValueAt(table.getSelectedRow(), 7).toString());
-        annualLeave.setUsed(Integer.parseInt(table.getModel().getValueAt(table.getSelectedRow(), 6).toString()));
+        if(requestLeave.getLeaveID() == 1 || requestLeave.getLeaveID() == 2){
+            annualLeave.setUsed(Integer.parseInt(table.getModel().getValueAt(table.getSelectedRow(), 6).toString()));
+        }else{
+            annualLeave.setUsed(0);
+        }
+
         annualLeave.setAccrued(0);
         annualLeave.setBalance(employee.getAnnualLeave() - annualLeave.getUsed());
         employee.setAnnualLeave(annualLeave.getBalance());

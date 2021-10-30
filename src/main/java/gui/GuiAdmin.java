@@ -60,6 +60,8 @@ public class GuiAdmin extends JFrame {
 
         employeeName.setText(acc.getUserName());
         employeeRole.setText(role.getRoleTitle());
+        tableShowAccount.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tableShowEmployee.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         btn1.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn1.addMouseListener(new MouseAdapter() {
@@ -117,6 +119,16 @@ public class GuiAdmin extends JFrame {
                 btnDeleteActionPerformed(e);
             }
         });
+        contentPane.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                ContentPaneMouseClicked(e);
+            }
+        });
+    }
+//deselect tables
+    private void ContentPaneMouseClicked(MouseEvent e) {
+        tableShowAccount.clearSelection();
+        tableShowEmployee.clearSelection();
     }
 
 
@@ -281,7 +293,7 @@ public class GuiAdmin extends JFrame {
                 account.setEmloyeeId(Integer.parseInt(employeeId));
                 dao.deleteAccount(account);
                 showListAccount();
-            }else{
+            }else if(tableShowEmployee.getSelectedRow() != -1){
                 var rowindex = tableShowEmployee.getSelectedRow();
                 var employeeID = tableShowEmployee.getValueAt(rowindex, 0).toString();
 
@@ -296,6 +308,8 @@ public class GuiAdmin extends JFrame {
                 }else{
                     JOptionPane.showMessageDialog(null, "you cant delete a chief of department.");
                 }
+            }else{
+                JOptionPane.showMessageDialog(null, "Please select row you want to delete.");
             }
         }
     }

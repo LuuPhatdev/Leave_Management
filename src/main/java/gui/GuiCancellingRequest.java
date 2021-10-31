@@ -59,14 +59,20 @@ public class GuiCancellingRequest extends JFrame {
                 Integer.parseInt(table.getModel().getValueAt(table.getSelectedRow(), 1).toString()));
         var employee = employeeDao.getEmployeeByEmployeeId(requestLeave.getEmployeeID());
         if(table.getModel().getValueAt(table.getSelectedRow(), 0).toString().equals("accepted")){
-            employee.setAnnualLeave(employee.getAnnualLeave()+requestLeave.getAmount());
+            if(requestLeave.getLeaveID() == 1 || requestLeave.getLeaveID() == 2){
+                employee.setAnnualLeave(employee.getAnnualLeave()+requestLeave.getAmount());
+            }
         }
         var annualLeave = new AnnualLeave();
         annualLeave.setEmployeeID(employee.getEmployeeId());
         annualLeave.setDateTimeOff(LocalDate.now());
         annualLeave.setDescriptionTimeOff("Cancelling request id: "+requestLeave.getRequestID());
         annualLeave.setUsed(0);
-        annualLeave.setAccrued(requestLeave.getAmount());
+        if(requestLeave.getLeaveID() == 1 || requestLeave.getLeaveID() == 2){
+            annualLeave.setAccrued(requestLeave.getAmount());
+        }else{
+            annualLeave.setAccrued(0);
+        }
         annualLeave.setBalance(employee.getAnnualLeave());
 
         employeeDao.updateSingleEmployee(employee);

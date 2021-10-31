@@ -54,7 +54,7 @@
                   <contentAreaFilled value="true"/>
                   <defaultCapable value="false"/>
                   <foreground color="-1"/>
-                  <text value="Cancelling"/>
+                  <text value="Cancel"/>
                 </properties>
               </component>
               <component id="1f73" class="javax.swing.JButton" binding="btnKeep">

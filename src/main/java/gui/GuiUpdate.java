@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GuiUpdate extends JFrame {
-    private final GuiAdmin guiAdmin;
+    private final GuiFakeAdmin guiFakeAdmin;
     private JPanel contentPane;
     private JPanel topPanel;
     private JTextField txtEmployeeId;
@@ -23,8 +23,8 @@ public class GuiUpdate extends JFrame {
     private JButton btnDiscard;
     private JButton btnSave;
 
-    public GuiUpdate(GuiAdmin guiAdmin) {
-        this.guiAdmin = guiAdmin;
+    public GuiUpdate(GuiFakeAdmin guiFakeAdmin) {
+        this.guiFakeAdmin = guiFakeAdmin;
         this.showListAccount();
 
         txtEmployeeId.setEditable(false);
@@ -40,7 +40,7 @@ public class GuiUpdate extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                GuiUpdate.this.guiAdmin.setEnabled(true);
+                GuiUpdate.this.guiFakeAdmin.setEnabled(true);
             }
         });
 

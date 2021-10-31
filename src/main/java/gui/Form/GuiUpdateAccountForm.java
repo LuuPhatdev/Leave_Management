@@ -2,13 +2,13 @@ package gui.Form;
 
 import dao.AccountDao;
 import entity.Account;
-import gui.GuiAdmin;
+import gui.GuiFakeAdmin;
 
 import javax.swing.*;
 import java.awt.event.*;
 
 public class GuiUpdateAccountForm extends JFrame {
-    private final GuiAdmin guiAdmin;
+    private final GuiFakeAdmin guiFakeAdmin;
     private JPanel contentPane;
     private JPanel topPanel;
     public JTextField txtEmployeeId;
@@ -18,22 +18,22 @@ public class GuiUpdateAccountForm extends JFrame {
     private JButton btnDiscard;
     private JButton btnSave;
 
-    public GuiUpdateAccountForm(GuiAdmin guiAdmin) {
-        this.guiAdmin = guiAdmin;
+    public GuiUpdateAccountForm(GuiFakeAdmin guiFakeAdmin) {
+        this.guiFakeAdmin = guiFakeAdmin;
 
         txtEmployeeId.setEditable(false);
         txtRoleId.setEditable(false);
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 300, 300);
+        setBounds(100, 100, 300, 200);
         setLocationRelativeTo(null);
         setTitle("Update Account");
 
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                GuiUpdateAccountForm.this.guiAdmin.setEnabled(true);
+                GuiUpdateAccountForm.this.guiFakeAdmin.setEnabled(true);
             }
         });
 
@@ -69,6 +69,6 @@ public class GuiUpdateAccountForm extends JFrame {
         account.setUserName(userName);
         account.setPassword(password);
         dao.updateAccount(account);
-        guiAdmin.showListAccount();
+        guiFakeAdmin.showListAccount();
     }
 }

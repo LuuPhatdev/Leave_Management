@@ -232,6 +232,7 @@ public class GuiFakeManager extends JFrame {
         btnPrevious3.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnPrevious4.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnPrevious5.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnChecking.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         //Switch Tag
         btnRequest.addActionListener(new ActionListener() {

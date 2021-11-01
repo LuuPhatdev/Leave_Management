@@ -96,9 +96,9 @@ public class GuiLogin extends JFrame {
         if (Validation.checkInput(str, RegexConst.USER, 5, 15)) {
             lbUserNameError.setText("");
         } else if (str.length() < 5 || str.length() > 15) {
-            lbUserNameError.setText("username can only between 5 and 15 letters.");
+            lbUserNameError.setText("Username can only between 5 and 15 letters.");
         } else {
-            lbUserNameError.setText("username must not have special letters, only alphabetic and numbers.");
+            lbUserNameError.setText("Username must not have special letters, only alphabetic and numbers.");
         }
     }
     private void TxtPasswordFocusLost(FocusEvent e) {
@@ -106,9 +106,9 @@ public class GuiLogin extends JFrame {
         if (Validation.checkInput(str, RegexConst.PASS, 5, 15)) {
             lbPasswordError.setText("");
         } else if (str.length() < 5 || str.length() > 15) {
-            lbPasswordError.setText("password can only between 5 and 15 letters.");
+            lbPasswordError.setText("Password can only between 5 and 15 letters.");
         } else {
-            lbPasswordError.setText("password must not have special letters, only alphabetic and numbers.");
+            lbPasswordError.setText("Password must not have special letters, only alphabetic and numbers.");
         }
     }
 

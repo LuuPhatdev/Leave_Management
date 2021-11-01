@@ -41,7 +41,7 @@ public class GuiUpdateEmloyee extends JFrame {
 
         setContentPane(contentPane);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 550, 300);
+        setBounds(100, 100, 550, 320);
         setLocationRelativeTo(null);
         setTitle("Update Employee");
 

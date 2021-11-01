@@ -248,7 +248,8 @@ public class GuiFakeEmployee extends JFrame {
         if (cBLeaveType.getSelectedItem().equals("Annual leave") || cBLeaveType.getSelectedItem().equals(
                 "Sick leave")) {
             if (employee.getAnnualLeave() == 0) {
-                JOptionPane.showMessageDialog(null, "can not choose this when annual leave is 0.");
+                JOptionPane.showMessageDialog(null, "Can not choose this when annual leave is 0. " +
+                        "Please use unpaid leave instead.");
                 cBLeaveType.setSelectedIndex(0);
             }else{
                 if(jDateStartChooser.getDate() != null && jDateEndChooser.getDate() != null){
@@ -270,7 +271,7 @@ public class GuiFakeEmployee extends JFrame {
                     if ((double) amount <= employee.getAnnualLeave()) {
                         lbLeaveDurationError.setText("");
                     } else {
-                        lbLeaveDurationError.setText("exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
+                        lbLeaveDurationError.setText("Exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
                     }
                 }else{
                     lbLeaveDurationError.setText("");
@@ -304,9 +305,14 @@ public class GuiFakeEmployee extends JFrame {
                 } else if (status.equals("denied")) {
                     JOptionPane.showMessageDialog(null, "Can not cancel a denied request.");
                 } else if (LocalDate.now().compareTo(
-                        LocalDate.parse(tbInbox.getModel().getValueAt(tbInbox.getSelectedRow(), 2).toString())) >= 0) {
+                        LocalDate.parse( tbInbox.getModel().getValueAt(tbInbox.getSelectedRow(), 2).toString() ) ) >= 0 &&
+                        LocalDate.now().compareTo(
+                                LocalDate.parse( tbInbox.getModel().getValueAt(tbInbox.getSelectedRow(), 3).toString() ) ) <= 0) {
                     JOptionPane.showMessageDialog(null, "Can not cancel an accepted request already in effect.");
-                } else {
+                } else if(LocalDate.now().compareTo(
+                        LocalDate.parse( tbInbox.getModel().getValueAt(tbInbox.getSelectedRow(), 3).toString() ) ) > 0) {
+                    JOptionPane.showMessageDialog(null, "Can not cancel an ended accepted request.");
+                }else{
                     var cancelling = new GuiCancellingRequest(this, tbInbox, tableModel2);
                 }
             }
@@ -452,7 +458,7 @@ public class GuiFakeEmployee extends JFrame {
 
         if (rLeaveDao.pendingCheckingByEmployeeID(employeeID)) {
 
-            JOptionPane.showMessageDialog(null, "you already sent a request, please wait still your request is " +
+            JOptionPane.showMessageDialog(null, "You already sent a request, please wait still your request is " +
                     "checked.");
 
         } else if (recentlyAcceptedRequest.getDateEnd() == null || LocalDate.now().compareTo(recentlyAcceptedRequest.getDateEnd()) >= 0) {
@@ -470,13 +476,13 @@ public class GuiFakeEmployee extends JFrame {
                 requestForm.setEmployeeID(employeeID);
                 if(cBLeaveType.getSelectedIndex() == 0){
                     JOptionPane.showMessageDialog(null,
-                            "please select leave type.");
+                            "Please select leave type.");
                     break;
                 }else{
                     requestForm.setLeaveID(lType.getLeaveID());
                 }
                 if (jDateStartChooser.getDate() == null || jDateEndChooser.getDate() == null) {
-                    JOptionPane.showMessageDialog(null, "please select days for Day start and Day end.");
+                    JOptionPane.showMessageDialog(null, "Please select days for Day start and Day end.");
                     break;
                 }
 
@@ -517,7 +523,7 @@ public class GuiFakeEmployee extends JFrame {
                         requestForm.setAmount(amount);
                     } else {
                         JOptionPane.showMessageDialog(null,
-                                "exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
+                                "Exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
                         break;
                     }
 
@@ -527,12 +533,12 @@ public class GuiFakeEmployee extends JFrame {
 
                 if (txtARequestDescription.getText().trim().length() == 0 ||
                         txtARequestDescription.getText() == null) {
-                    JOptionPane.showMessageDialog(null, "please do not leave this description empty.");
+                    JOptionPane.showMessageDialog(null, "Please do not leave this description empty.");
                     break;
                 }
 
                 if (txtARequestDescription.getText().trim().length() > 200) {
-                    JOptionPane.showMessageDialog(null, "maximum 200 letters is allowed in description.");
+                    JOptionPane.showMessageDialog(null, "Maximum 200 letters is allowed in description.");
                     break;
                 }
 
@@ -543,7 +549,7 @@ public class GuiFakeEmployee extends JFrame {
                 check = 0;
             }
         } else {
-            JOptionPane.showMessageDialog(null, "your recently accepted request still not over.");
+            JOptionPane.showMessageDialog(null, "Your recently accepted request still not over.");
         }
     }
 
@@ -603,7 +609,7 @@ public class GuiFakeEmployee extends JFrame {
                 if ((double) amount <= employee.getAnnualLeave()) {
                     lbLeaveDurationError.setText("");
                 } else {
-                    lbLeaveDurationError.setText("exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
+                    lbLeaveDurationError.setText("Exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
                 }
             }else{
                 lbLeaveDurationError.setText("");
@@ -638,7 +644,7 @@ public class GuiFakeEmployee extends JFrame {
                 if ((double) amount <= employee.getAnnualLeave()) {
                     lbLeaveDurationError.setText("");
                 } else {
-                    lbLeaveDurationError.setText("exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
+                    lbLeaveDurationError.setText("Exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
                 }
             }else{
                 lbLeaveDurationError.setText("");

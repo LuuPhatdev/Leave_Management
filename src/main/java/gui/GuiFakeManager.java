@@ -286,12 +286,7 @@ public class GuiFakeManager extends JFrame {
 
         cBLeaveType.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
-                if(employee.getAnnualLeave() == 0){
-                    if(cBLeaveType.getSelectedItem().equals("Annual leave") || cBLeaveType.getSelectedItem().equals("Sick leave")){
-                        JOptionPane.showMessageDialog(null, "can not choose this when annual leave is 0.");
-                        cBLeaveType.setSelectedIndex(0);
-                    }
-                }
+                CBLeaveTypeItemStateChanged(e);
             }
         });
 
@@ -329,6 +324,44 @@ public class GuiFakeManager extends JFrame {
                 TxtARequestDescriptionFocusLost(e);
             }
         });
+    }
+
+    private void CBLeaveTypeItemStateChanged(ItemEvent e) {
+        var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
+        if (cBLeaveType.getSelectedItem().equals("Annual leave") || cBLeaveType.getSelectedItem().equals(
+                "Sick leave")) {
+            if (employee.getAnnualLeave() == 0) {
+                JOptionPane.showMessageDialog(null, "can not choose this when annual leave is 0.");
+                cBLeaveType.setSelectedIndex(0);
+            }else{
+                if(jDateStartChooser.getDate() != null && jDateEndChooser.getDate() != null){
+                    var amount = 0;
+                    if (jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate()) != 0) {
+                        if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
+                                jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
+                            amount = 1;
+                        }
+                        Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+                        long diffDate =
+                                jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
+                                                jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
+                                        .filter(d -> !weekend.contains(d.getDayOfWeek()))
+                                        .count();
+                        amount += Math.toIntExact(diffDate);
+                    }
+
+                    if ((double) amount <= employee.getAnnualLeave()) {
+                        lbLeaveDurationError.setText("");
+                    } else {
+                        lbLeaveDurationError.setText("exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
+                    }
+                }else{
+                    lbLeaveDurationError.setText("");
+                }
+            }
+        }else{
+            lbLeaveDurationError.setText("");
+        }
     }
 
     private void TxtARequestDescriptionFocusLost(FocusEvent e) {
@@ -562,15 +595,21 @@ public class GuiFakeManager extends JFrame {
             var lType = new LeaveType();
             lType = lTypeDao.getLeaveTypeInfoByName(cBLeaveType.getSelectedItem().toString());
             var employee = employeeDao.getEmployeeByEmployeeId(employeeID);
-            var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
-            var admin = employeeDao.getEmployeeByEmployeeId(accountDao.getAdminID());
             var managerForSpecialLeaveTypes = employeeDao.getEmployeeByEmployeeId(departmentDao.getDepartmentChiefID(1));
             var requestForm = new RequestLeave();
             var check = 1;
 
             while (check > 0) {
                 requestForm.setEmployeeID(employeeID);
-                requestForm.setLeaveID(lType.getLeaveID());
+
+                if(cBLeaveType.getSelectedIndex() == 0){
+                    JOptionPane.showMessageDialog(null,
+                            "please select leave type.");
+                    break;
+                }else{
+                    requestForm.setLeaveID(lType.getLeaveID());
+                }
+
                 if (jDateStartChooser.getDate() == null || jDateEndChooser.getDate() == null) {
                     JOptionPane.showMessageDialog(null, "please select days for Day start and Day end.");
                     break;
@@ -580,22 +619,26 @@ public class GuiFakeManager extends JFrame {
                 requestForm.setDateEnd(jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
                 requestForm.setRequestStatus("pending");
 
-                if (lType.getLeaveID() == 1 || lType.getLeaveID() == 2) {
-                    requestForm.setRequestTo(manager.getEmail());
-                } else {
-                    if(departmentDao.getDepartmentChiefID(1) != employeeID){
-                        requestForm.setRequestTo(managerForSpecialLeaveTypes.getEmail());
+                if( employee.getEmployeeId() == departmentDao.getDepartmentChiefID(1) ||
+                        departmentDao.checkIfIsChiefDepartment( employee.getEmployeeId() ) ){
+                    requestForm.setRequestTo( managerForSpecialLeaveTypes.getEmail() );
+                }else{
+                    if ( (lType.getLeaveID() == 1 || lType.getLeaveID() == 2) ) {
+                        var manager = employeeDao.getEmployeeByEmployeeId(employee.getManagerId());
+                        requestForm.setRequestTo(manager.getEmail());
                     }else{
-                        requestForm.setRequestTo(admin.getEmail());
+                        requestForm.setRequestTo( managerForSpecialLeaveTypes.getEmail() );
                     }
                 }
 
                 var amount = 0;
+
+                if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
+                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
+                    amount = 1;
+                }
+
                 if (jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate()) != 0) {
-                    if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
-                            jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
-                        amount = 1;
-                    }
                     Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
                     long diffDate =
                             jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
@@ -604,13 +647,18 @@ public class GuiFakeManager extends JFrame {
                                     .count();
                     amount += Math.toIntExact(diffDate);
                 }
+                if(requestForm.getLeaveID() == 1 || requestForm.getLeaveID() == 2){
 
-                if ((double) amount <= employee.getAnnualLeave()) {
+                    if ((double) amount <= employee.getAnnualLeave()) {
+                        requestForm.setAmount(amount);
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
+                        break;
+                    }
+
+                }else{
                     requestForm.setAmount(amount);
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                            "exceeded value of annual leave: " + Math.round(employee.getAnnualLeave()));
-                    break;
                 }
 
                 if (txtARequestDescription.getText().trim().length() == 0 ||
@@ -628,6 +676,7 @@ public class GuiFakeManager extends JFrame {
                 rLeaveDao.insertRequestLeave(requestForm);
                 this.showInbox();
                 SendMail.sendMailForRequestLeave(requestForm);
+
                 check = 0;
             }
         }else{
@@ -743,7 +792,13 @@ public class GuiFakeManager extends JFrame {
         editorStart.setEditable(false);
         editorEnd.setEditable(false);
         jDateEndChooser.setEnabled(false);
-        jDateStartChooser.getJCalendar().setMinSelectableDate(new Date());
-        jDateEndChooser.getJCalendar().setMinSelectableDate(new Date());
+
+        var calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DATE, 1);
+        var tomorrow = calendar.getTime();
+
+        jDateStartChooser.getJCalendar().setMinSelectableDate(tomorrow);
+        jDateEndChooser.getJCalendar().setMinSelectableDate(tomorrow);
     }
 }

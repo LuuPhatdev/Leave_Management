@@ -34,4 +34,18 @@ public class LoginDao {
         }
         return users.get(0);
     }
+
+    public static boolean checkIfExistsAcc(String userName) {
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from account where userName = ?");) {
+            cs.setString(1, userName);
+            var rs = cs.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return false;
+    }
 }

@@ -1,5 +1,7 @@
 package gui;
 
+import dao.AccountDao;
+import dao.LoginDao;
 import entity.Account;
 import helper.RegexConst;
 import helper.Validation;
@@ -137,27 +139,32 @@ public class GuiLogin extends JFrame {
             JOptionPane.showMessageDialog(null, "UserName and/or Password needed to be in between 5 and 15 letters " +
                     "and must not contains special letter(s)");
         } else {
-            Account user = Account.getAccountFromUserName(userName);
-            if (userName.equals(user.getUserName()) && password.equals(user.getPassword())) {
-                if (user.getRoleId() == 1) {
-                    dispose();
+            if(!LoginDao.checkIfExistsAcc(userName)){
+                JOptionPane.showMessageDialog(null, "Wrong username or password");
+            }else{
+                Account user = Account.getAccountFromUserName(userName);
+                if (userName.equals(user.getUserName()) && password.equals(user.getPassword())) {
+                    if (user.getRoleId() == 1) {
+                        dispose();
 //                    var adm = new GuiAdmin(userName);
-                    var adm = new GuiFakeAdmin(user.getEmloyeeId(), userName);
-                    JOptionPane.showMessageDialog(null, "Login Success");
-                } else if (user.getRoleId() == 2) {
-                    dispose();
+                        var adm = new GuiFakeAdmin(user.getEmloyeeId(), userName);
+                        JOptionPane.showMessageDialog(null, "Login Success");
+                    } else if (user.getRoleId() == 2) {
+                        dispose();
 //                    var emp = new GuiEmployee(user.getEmloyeeId());
-                    var fakeEmployee = new GuiFakeEmployee(user.getEmloyeeId(), userName);
-                    JOptionPane.showMessageDialog(null, "Login Success");
-                } else if (user.getRoleId() == 3) {
-                    dispose();
+                        var fakeEmployee = new GuiFakeEmployee(user.getEmloyeeId(), userName);
+                        JOptionPane.showMessageDialog(null, "Login Success");
+                    } else if (user.getRoleId() == 3) {
+                        dispose();
 //                    var fakeManagement = new GuiManager(user.getEmloyeeId());
-                    var fakeEmployee = new GuiFakeManager(user.getEmloyeeId(), userName);
-                    JOptionPane.showMessageDialog(null, "Login Success");
+                        var fakeEmployee = new GuiFakeManager(user.getEmloyeeId(), userName);
+                        JOptionPane.showMessageDialog(null, "Login Success");
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Wrong username or password");
                 }
             }
+
         }
     }
 }

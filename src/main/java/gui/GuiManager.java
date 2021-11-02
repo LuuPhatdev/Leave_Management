@@ -270,8 +270,8 @@ public class GuiManager extends JFrame {
                     break;
                 }
 
-                requestForm.setDateStart(jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
-                requestForm.setDateEnd(jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate());
+                requestForm.setDateStart(jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate());
+                requestForm.setDateEnd(jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate());
                 requestForm.setRequestStatus("pending");
 
                 if (lType.getLeaveID() == 1 || lType.getLeaveID() == 2) {
@@ -282,14 +282,14 @@ public class GuiManager extends JFrame {
 
                 var amount = 0;
                 if (jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate()) != 0) {
-                    if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
-                            jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
+                    if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
+                            jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
                         amount = 1;
                     }
                     Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
                     long diffDate =
-                            jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
-                                            jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
+                            jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate().datesUntil(
+                                            jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate())
                                     .filter(d -> !weekend.contains(d.getDayOfWeek()))
                                     .count();
                     amount += Math.toIntExact(diffDate);
@@ -392,14 +392,14 @@ public class GuiManager extends JFrame {
         if(jDateStartChooser.getDate() != null && jDateEndChooser.getDate() != null){
             var amount = 0;
             if (jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate()) != 0) {
-                if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
-                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
+                if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
+                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
                     amount = 1;
                 }
                 Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
                 long diffDate =
-                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
-                                        jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
+                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate().datesUntil(
+                                        jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate())
                                 .filter(d -> !weekend.contains(d.getDayOfWeek()))
                                 .count();
                 amount += Math.toIntExact(diffDate);
@@ -421,14 +421,14 @@ public class GuiManager extends JFrame {
         if(jDateEndChooser.getDate() != null){
             var amount = 0;
             if (jDateStartChooser.getDate().compareTo(jDateEndChooser.getDate()) != 0) {
-                if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
-                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
+                if (jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate().getDayOfWeek() != DayOfWeek.SATURDAY ||
+                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate().getDayOfWeek() != DayOfWeek.SUNDAY) {
                     amount = 1;
                 }
                 Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
                 long diffDate =
-                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate().datesUntil(
-                                        jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC")).toLocalDate())
+                        jDateStartChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate().datesUntil(
+                                        jDateEndChooser.getDate().toInstant().atZone(ZoneId.of("UTC+07:00")).toLocalDate())
                                 .filter(d -> !weekend.contains(d.getDayOfWeek()))
                                 .count();
                 amount += Math.toIntExact(diffDate);

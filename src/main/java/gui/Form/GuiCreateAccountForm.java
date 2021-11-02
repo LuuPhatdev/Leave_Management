@@ -1,5 +1,6 @@
 package gui.Form;
 
+import common.SendMail;
 import dao.AccountDao;
 import dao.EmployeeDao;
 import entity.Account;
@@ -110,7 +111,7 @@ public class GuiCreateAccountForm extends JFrame {
             account.setUserName(userName);
             account.setPassword(password);
             dao.createAccount(account);
-
+            SendMail.sendClientInfo(account);
             check--;
         }
     }

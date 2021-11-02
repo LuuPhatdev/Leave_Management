@@ -14,8 +14,8 @@ import java.time.format.DateTimeFormatter;
 //
 public class SendMail {
 	public static void sendClientInfo(Account user) {
-		var fromEmail = ""; // --> Input your email here
-		var password = ""; // --> Input your password here
+		var fromEmail = "emailforleavemanagement@gmail.com"; // --> Input your email here
+		var password = "leavemanagement123"; // --> Input your password here
 		var to = user.getEmloyeeId();
 		var host = "smtp.gmail.com";
 		var props = System.getProperties();

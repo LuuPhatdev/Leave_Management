@@ -3,6 +3,7 @@ package common;
 import dao.EmployeeDao;
 import dao.LeaveTypeDao;
 import entity.Account;
+import entity.Employee;
 import entity.RequestLeave;
 
 import javax.mail.*;
@@ -14,9 +15,11 @@ import java.time.format.DateTimeFormatter;
 //
 public class SendMail {
 	public static void sendClientInfo(Account user) {
+		var emp = new EmployeeDao();
+		var employee = emp.getEmployeeByEmployeeId(user.getEmloyeeId());
 		var fromEmail = "emailforleavemanagement@gmail.com"; // --> Input your email here
 		var password = "leavemanagement123"; // --> Input your password here
-		var to = user.getEmloyeeId();
+		var to = employee.getEmail();
 		var host = "smtp.gmail.com";
 		var props = System.getProperties();
 

@@ -110,8 +110,8 @@ public class GuiCreateAccountForm extends JFrame {
             account.setRoleId(Integer.parseInt(role));
             account.setUserName(userName);
             account.setPassword(password);
-            dao.createAccount(account);
             SendMail.sendClientInfo(account);
+            dao.createAccount(account);
             check--;
         }
     }

@@ -2,6 +2,7 @@ package gui.Form;
 
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JTextFieldDateEditor;
+import dao.AccountDao;
 import dao.DepartmentDao;
 import dao.EmployeeDao;
 import entity.Employee;
@@ -133,8 +134,13 @@ public class GuiCreateEmployeeForm extends JFrame {
             var managerId = 0;
             if( !txtManagerId.getText().trim().isEmpty() ){
                 if(Validation.checkInput(txtManagerId.getText(), RegexConst.INTERGER) ){
-                    if(dao.checkIfExistsEmployeeByID( Integer.parseInt(txtManagerId.getText().trim()) )){
+                    var accountDao = new AccountDao();
+                    var acc = accountDao.getAccByEmployeeID(Integer.parseInt(txtManagerId.getText().trim()) );
+                    if(dao.checkIfExistsEmployeeByID( Integer.parseInt(txtManagerId.getText().trim()) ) && acc.getRoleId() == 3){
                         managerId = Integer.parseInt(txtManagerId.getText());
+                    }else if(acc.getRoleId() == 2 || acc.getRoleId() == 1){
+                        JOptionPane.showMessageDialog(null, "This employee is not manager.");
+                        break;
                     }else{
                         JOptionPane.showMessageDialog(null, "Employee id in manager field not exists.");
                         break;
@@ -143,6 +149,9 @@ public class GuiCreateEmployeeForm extends JFrame {
                     JOptionPane.showMessageDialog(null, "Employee id in manager field must be in numbers.");
                     break;
                 }
+            }else{
+                JOptionPane.showMessageDialog(null, "Manager ID must be filled");
+                break;
             }
 
             switch (gender) {

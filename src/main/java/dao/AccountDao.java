@@ -150,4 +150,22 @@ public class AccountDao {
         }
         return listSearchedAccount;
     }
+    public Account getAccByEmployeeID(int employeeID){
+        var acc = new Account();
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select * from account where employee_id = ?");
+        ) {
+            cs.setInt(1, employeeID);
+            var rs = cs.executeQuery();
+            while(rs.next()){
+                acc.setEmloyeeId(rs.getInt("employee_id"));
+                acc.setRoleId(rs.getInt("role_id"));
+                acc.setUserName(rs.getString("username"));
+                acc.setPassword(rs.getString("pass"));
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return acc;
+    }
 }

@@ -2,6 +2,7 @@ package dao;
 
 import common.ConnectDBProperty;
 import entity.AnnualLeave;
+import org.decimal4j.util.DoubleRounder;
 
 
 import javax.swing.*;
@@ -23,9 +24,10 @@ public class AnnualLeaveDao {
                 annualLeave.setDateTimeOff(rs.getDate("date_time_off").toLocalDate());
                 annualLeave.setDescriptionTimeOff(rs.getString("description_time_off"));
                 annualLeave.setUsed(rs.getInt("used"));
-                annualLeave.setAccrued(rs.getDouble("accrued"));
-                annualLeave.setBalance(rs.getDouble("balance"));
+                annualLeave.setAccrued(DoubleRounder.round(rs.getDouble("accrued"), 2));
+                annualLeave.setBalance(DoubleRounder.round(rs.getDouble("balance"), 2));
                 listAnnualLeave.add(annualLeave);
+
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -65,8 +67,8 @@ public class AnnualLeaveDao {
                 annualLeave.setDateTimeOff(rs.getDate("date_time_off").toLocalDate());
                 annualLeave.setDescriptionTimeOff(rs.getString("description_time_off"));
                 annualLeave.setUsed(rs.getInt("used"));
-                annualLeave.setAccrued(rs.getDouble("accrued"));
-                annualLeave.setBalance(rs.getDouble("balance"));
+                annualLeave.setAccrued(DoubleRounder.round(rs.getDouble("accrued"), 2));
+                annualLeave.setBalance(DoubleRounder.round(rs.getDouble("balance"), 2));
                 listAnnualLeave.add(annualLeave);
             }
         } catch (Exception ex) {
@@ -83,8 +85,8 @@ public class AnnualLeaveDao {
             cs.setDate(2, Date.valueOf(annLeave.getDateTimeOff()));
             cs.setString(3, annLeave.getDescriptionTimeOff());
             cs.setInt(4, annLeave.getUsed());
-            cs.setDouble(5, annLeave.getAccrued());
-            cs.setDouble(6, annLeave.getBalance());
+            cs.setDouble(5, DoubleRounder.round(annLeave.getAccrued(), 2));
+            cs.setDouble(6, DoubleRounder.round(annLeave.getBalance(), 2));
             cs.executeUpdate();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());

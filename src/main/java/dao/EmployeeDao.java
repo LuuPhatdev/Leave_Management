@@ -3,6 +3,7 @@ package dao;
 import common.ConnectDBProperty;
 import entity.Account;
 import entity.Employee;
+import org.decimal4j.util.DoubleRounder;
 
 import javax.swing.*;
 import java.sql.Date;
@@ -25,7 +26,7 @@ public class EmployeeDao {
             employee.setPhone(rs.getString("phone"));
             employee.setEmail(rs.getString("email"));
             employee.setDateStart(rs.getDate("date_start").toLocalDate());
-            employee.setAnnualLeave(rs.getDouble("annual_leave"));
+            employee.setAnnualLeave(DoubleRounder.round(rs.getDouble("annual_leave"), 2));
             employee.setManagerId(rs.getInt("manager_id"));
             listEmployee.add(employee);
         }
@@ -101,7 +102,7 @@ public class EmployeeDao {
             cs.setString(5, employee.getPhone());
             cs.setString(6, employee.getEmail());
             cs.setDate(7, java.sql.Date.valueOf(employee.getDateStart()));
-            cs.setDouble(8, employee.getAnnualLeave());
+            cs.setDouble(8, DoubleRounder.round(employee.getAnnualLeave(), 2));
             cs.setInt(9, employee.getManagerId());
             cs.executeUpdate();
             JOptionPane.showMessageDialog(null, "success insert");
@@ -123,7 +124,7 @@ public class EmployeeDao {
             cs.setString(5, employee.getPhone());
             cs.setString(6, employee.getEmail());
             cs.setDate(7, Date.valueOf(employee.getDateStart()));
-            cs.setDouble(8, employee.getAnnualLeave());
+            cs.setDouble(8, DoubleRounder.round(employee.getAnnualLeave(), 2));
             cs.setInt(9, employee.getManagerId());
             cs.setInt(10, employee.getEmployeeId());
             cs.executeUpdate();

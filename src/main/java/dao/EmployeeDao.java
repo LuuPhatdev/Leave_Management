@@ -61,7 +61,7 @@ public class EmployeeDao {
              var cs = connect.prepareStatement("select * from employee where employee_id = ?");) {
             cs.setInt(1, employeeID);
             var rs = cs.executeQuery();
-            if( rs.next() ){
+            if (rs.next()) {
                 return true;
             }
         } catch (Exception ex) {
@@ -70,17 +70,17 @@ public class EmployeeDao {
         return false;
     }
 
-    public int checkIfExistsEmployeeEmailOrPhone(String email, String phone){
+    public int checkIfExistsEmployeeEmailOrPhone(String email, String phone) {
         try (var connect = ConnectDBProperty.getConnectionFromClassPath();
              var cs = connect.prepareStatement("select * from employee where email = ? or phone = ?");) {
             cs.setString(1, email);
             cs.setString(2, phone);
             var rs = cs.executeQuery();
-            while(rs.next()){
-                if(rs.getString("email").equals(email)){
+            while (rs.next()) {
+                if (rs.getString("email").equals(email)) {
                     return 1;
                 }
-                if(rs.getString("phone").equals(phone)){
+                if (rs.getString("phone").equals(phone)) {
                     return 2;
                 }
             }
@@ -126,6 +126,32 @@ public class EmployeeDao {
             cs.setDouble(8, employee.getAnnualLeave());
             cs.setInt(9, employee.getManagerId());
             cs.setInt(10, employee.getEmployeeId());
+            cs.executeUpdate();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+    }
+
+    public List<Employee> getAnnualLeave() {
+        List<Employee> listEmployee = new ArrayList<>();
+
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("select annual_leave from employee");) {
+            var rs = cs.executeQuery();
+            while (rs.next()) {
+                var employee = new Employee();
+                employee.setAnnualLeave(rs.getDouble("annual_leave"));
+                listEmployee.add(employee);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        return listEmployee;
+    }
+
+    public void upDateAnnualLeave() {
+        try (var connect = ConnectDBProperty.getConnectionFromClassPath();
+             var cs = connect.prepareStatement("UPDATE employee set annual_leave = annual_leave+1");) {
             cs.executeUpdate();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
